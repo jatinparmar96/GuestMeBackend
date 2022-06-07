@@ -7,9 +7,34 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 
+const speakerRoutes = require('./routes/speaker');
+
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, POST, PUT, PATCH, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  next();
+});
+
+app.use('/speaker', speakerRoutes);
+
+app.get('/', (req, res) => {
+  res.send('Hello GuesteaBackend');
+});
+
+app.use((error, req, res, next) => {
+  console.log(error);
+  const status = error.statusCode || 500;
+  const message = error.message;
+  const data = error.data;
+
+  res.status(status).json({ message: message, data: data });
+});
+
+
+
+
 const MyModel = mongoose.model('Test', new Schema({ name: String }));
-
-
 app.get('/dbtest', async (req, res) => {
   const model = new MyModel({});
   model.name = new Date().toISOString();
@@ -23,15 +48,10 @@ app.get('/dbtest', async (req, res) => {
     });
 });
 
-app.get('/', (req, res) => {
-  res.send('Hello GuesteaBackend');
+mongoose.connect(process.env.DATABASE_ACCESS, (result) => {
+  console.log('Database connected' + result);
+  app.listen(process.env.PORT || 80, () => {
+    console.log('Listening');
+  });
 });
-
-app.listen(process.env.PORT || 80, () => {
-  console.log('Listening');
-});
-
-mongoose.connect(process.env.DATABASE_ACCESS, (result) =>
-  console.log('Database connected' + result)
-);
-module.exports = mongoose.connection;
+// module.exports = mongoose.connection;
