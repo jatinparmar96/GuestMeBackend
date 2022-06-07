@@ -48,6 +48,7 @@ app.get('/dbtest', async (req, res) => {
     });
 });
 
+
 mongoose.connect(process.env.DATABASE_ACCESS, (result) => {
   console.log('Database connected' + result);
   app.listen(process.env.PORT || 80, () => {
@@ -55,3 +56,4 @@ mongoose.connect(process.env.DATABASE_ACCESS, (result) => {
   });
 });
 // module.exports = mongoose.connection;
+
