@@ -16,7 +16,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/speaker', speakerRoutes);
+app.use('/speakers', speakerRoutes);
 
 app.get('/', (req, res) => {
   res.send('Hello GuesteaBackend');
