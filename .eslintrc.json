@@ -1,0 +1,18 @@
+{
+	"env": {
+		"browser": true,
+		"commonjs": true,
+		"node": true,
+		"es2021": true
+	},
+	"rules": {
+		"arrow-body-style": "off",
+		"quotes": [
+			"error",
+			"single"
+		]
+	},
+	"parserOptions": {
+		"ecmaVersion": 12
+	}
+}
