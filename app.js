@@ -7,7 +7,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 
-const speakerRoutes = require('./routes/speaker');
+const speakerRoutes = require('./src/routes/speaker');
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');

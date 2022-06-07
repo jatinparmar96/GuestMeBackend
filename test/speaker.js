@@ -1,6 +1,6 @@
 const expect = require('chai').expect;
 
-const SpeakerController = require('../controllers/speaker');
+const SpeakerController = require('../src/controllers/speaker');
 
 
 describe('Speaker controllers', async () => {
