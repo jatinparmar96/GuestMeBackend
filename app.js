@@ -49,11 +49,17 @@ app.get('/dbtest', async (req, res) => {
 });
 
 
-mongoose.connect(process.env.DATABASE_ACCESS, (result) => {
-  console.log('Database connected' + result);
-  app.listen(process.env.PORT || 80, () => {
-    console.log('Listening');
-  });
+app.listen(process.env.PORT || 80, () => {
+  console.log(
+    `🛫 Server ready at http://localhost:${
+      process.env.PORT || 80
+    }/`
+  );
 });
+
+mongoose.connect(process.env.DATABASE_ACCESS, (result) =>
+  console.log('Database connected' + result)
+);
+
 // module.exports = mongoose.connection;
 
