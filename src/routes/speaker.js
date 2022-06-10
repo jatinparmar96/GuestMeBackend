@@ -3,7 +3,7 @@ const router = express.Router();
 
 const speakerController = require('../controllers/speaker');
 
-router.post('/signup', speakerController.signup);
+router.post('/register', speakerController.register);
 
 router.post('/login', speakerController.login);
 
@@ -11,8 +11,5 @@ router.post('/login', speakerController.login);
 router.get('/', speakerController.getSpeakers);
 
 // router.post('/update', speakerController.update);
-
-
-
 
 module.exports = router;
