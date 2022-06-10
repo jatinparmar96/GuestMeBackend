@@ -104,15 +104,7 @@ Ensure you first run `npm install`. Then there are two methods to run the app:
 
 1. Ensure your machine is connected to the Internet for database access to MongoDB Atlas Cloud.
 
-2. `npm run dev` will start the application in development mode. The application should hot reload after saving changes to a file
-
-**Production**
-
-1. `npm run build` to build the application
-
-Please work off of the `dev` branch. Changes on `main` branch are ready for live deployment.
-
----
+2. `npm run start` will start the application in development mode. The application should hot reload after saving changes to a file
 
 ### Testing
 
