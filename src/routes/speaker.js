@@ -15,7 +15,6 @@ router.post('/login', speakerController.login);
  */
 router.get(
   '/',
-  SpeakerAuthMiddleware,
   speakerController.getSpeakers
 );
 
