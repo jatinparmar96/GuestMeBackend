@@ -2,13 +2,22 @@ const express = require('express');
 const router = express.Router();
 
 const speakerController = require('../controllers/speaker');
-
+const {
+  SpeakerAuthMiddleware,
+} = require('../middleware/SpeakerAuthentication');
 router.post('/register', speakerController.register);
 
 router.post('/login', speakerController.login);
 
 // Initially back 10 speakers
-router.get('/', speakerController.getSpeakers);
+/**
+ * Only for Testing, Speaker Middleware from here will need to be removed.
+ */
+router.get(
+  '/',
+  SpeakerAuthMiddleware,
+  speakerController.getSpeakers
+);
 
 // router.post('/update', speakerController.update);
 
