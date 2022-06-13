@@ -2,13 +2,15 @@ const bcrypt = require('bcrypt');
 const Speaker = require('../models/speaker');
 const jwt = require('jsonwebtoken');
 const { generateHash } = require('../utils/utils');
+const AuthenticationError = require('../errors/AuthenticationError');
+
 /**
  * Handle registration of speaker and send token back.
  * TODO:
  * Validation, If Speaker already exists respond with status code (409 Conflict or 422 Unprocessable Entity)
- * @param {Speaker} req
- * @param {*} res
- * @param {*} next
+ * @param {import('express').Request<{}, {}, SpeakerRegisterRequestBody, {}>} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
  */
 exports.register = async (req, res, next) => {
   try {
@@ -57,33 +59,45 @@ exports.register = async (req, res, next) => {
 /**
  * Sign In the Speaker
  * TODO: Maybe Send user Object back without password included
+ * @param {import('express').Request<{}, {}, SpeakerLoginRequestBody, {}>} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
  * @return
  *
  */
 exports.login = async (req, res, next) => {
-  const password = await generateHash(
-    req.body.password ?? ''
-  );
-  let user = await Speaker.findOne({
-    name: req.body.name,
-  });
-  const valid = await bcrypt.compare(
-    req.body.password,
-    user.password
-  );
-  if (valid) {
-    const token = jwt.sign(
-      { name: user.name, id: user._id },
-      process.env.JWT_SECRET_ACCESS,
-      { expiresIn: '30 days' }
-    );
-    /**
-     * For now only send token, until we find a better way to mutate user object to remove
-     * password field
-     */
-    res.status(200).send({ token });
-  } else {
-    res.status(404).send();
+  try {
+    const { email } = req.body;
+    const password = await generateHash(req.body.password ?? '');
+    let speaker=await Speaker.findOne({ 'credentials.email': email });
+
+    if (speaker === null) {
+      const error = new AuthenticationError('Invalid credentials');
+      console.log('error: ', error);
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const valid = await bcrypt.compare(req.body.password, password);
+    if (valid) {
+      const token = jwt.sign(
+        { email: speaker.credentials.email, id: speaker._id },
+        process.env.JWT_SECRET_ACCESS,
+        { expiresIn: '30 days' }
+      );
+      /**
+       * For now only send token, until we find a better way to mutate user object to remove
+       * password field
+       */
+      res.status(200).send({ token });
+    } else {
+      const error = new AuthenticationError('Invalid credentials');
+      error.statusCode = 404;
+      throw error;
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
   }
 };
 
@@ -94,3 +108,8 @@ exports.getSpeakers = async (req, res, next) => {
   const speakers = await Speaker.find({});
   res.json(speakers);
 };
+
+/**
+ * @typedef {import('./speaker.controller').SpeakerRegisterRequestBody} SpeakerRegisterRequestBody
+ * @typedef {import('./speaker.controller').SpeakerLoginRequestBody} SpeakerLoginRequestBody
+ */
