@@ -15,10 +15,7 @@ app.use((req, res, next) => {
     'Access-Control-Allow-Methods',
     'OPTIONS, GET, POST, PUT, PATCH, DELETE'
   );
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'Content-Type, Authorization'
-  );
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   next();
 });
 
@@ -29,18 +26,13 @@ app.get('/', (req, res) => {
 });
 
 app.use((error, req, res, next) => {
-  console.log(error);
-  const status = error.statusCode || 500;
+  const statusCode = error.statusCode || 500;
   const message = error.message;
   const data = error.data;
-
-  res.status(status).json({ message: message, data: data });
+  res.status(statusCode).send({ message: message, data: data });
 });
 
-const MyModel = mongoose.model(
-  'Test',
-  new Schema({ name: String })
-);
+const MyModel = mongoose.model('Test', new Schema({ name: String }));
 app.get('/dbtest', async (req, res) => {
   const model = new MyModel({});
   model.name = new Date().toISOString();
@@ -55,11 +47,7 @@ app.get('/dbtest', async (req, res) => {
 });
 
 app.listen(process.env.PORT || 80, () => {
-  console.log(
-    `🛫 Server ready at http://localhost:${
-      process.env.PORT || 80
-    }/`
-  );
+  console.log(`🛫 Server ready at http://localhost:${process.env.PORT || 80}/`);
 });
 
 mongoose.connect(process.env.DATABASE_ACCESS, (result) =>

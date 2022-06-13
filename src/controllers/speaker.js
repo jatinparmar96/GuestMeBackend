@@ -11,20 +11,47 @@ const { generateHash } = require('../utils/utils');
  * @param {*} next
  */
 exports.register = async (req, res, next) => {
-  const speaker = new Speaker(req.body);
-  speaker.password = await generateHash(speaker.password);
-  await speaker.save();
+  try {
+    const { userName, userLastname, email, password, confirmPassword } =
+      req.body;
+    const readySpeaker = await Speaker.find({ 'credentials.email': email });
+    if (readySpeaker.length > 0) {
+      const error = new AuthenticationError(
+        'This email has already been registered'
+      );
+      error.statusCode = 401;
+      throw error;
+    }
 
-  //? By default the token expires in 30 days
-  const token = jwt.sign(
-    { name: speaker.name, id: speaker._id },
-    process.env.JWT_SECRET_ACCESS,
-    { expiresIn: '30 days' }
-  );
-  res.status(200).send({
-    speaker,
-    token,
-  });
+    if (password !== confirmPassword) {
+      const error = new AuthenticationError('Passwords do not match');
+      error.statusCode = 402;
+      throw error;
+    }
+
+    const speaker = new Speaker({
+      userName,
+      credentials: {
+        email: email,
+        password: await generateHash(password),
+      },
+    });
+
+    await speaker.save();
+
+    //? By default the token expires in 30 days
+    const token = jwt.sign(
+      { name: speaker.name, id: speaker._id },
+      process.env.JWT_SECRET_ACCESS,
+      { expiresIn: '30 days' }
+    );
+    res.status(200).send({
+      speaker,
+      token,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 /**
