@@ -15,6 +15,7 @@ Please ensure the following extensions are installed:
 - [Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 - [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
 - [Better Comments](https://marketplace.visualstudio.com/items?itemName=aaron-bond.better-comments)
+- [Rest Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) (new)
 - [Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker) (optional)
 
 ---
@@ -72,15 +73,16 @@ Then copy and paste the following into the file and save:
 
 ### Env File
 
-| Key             | Value                                                                                   |
-| --------------- | --------------------------------------------------------------------------------------- |
-| PORT            | 8080                                                                                    |
-| DB_DIALECT      | MongoDB                                                                                 |
-| DB_HOST         | MongoDB Atlas                                                                           |
-| DATABASE_ACCESS | Contact Admin for database url                                                          |
-| DB_NAME         | guest_me_app                                                                            |
-| MODE            | development                                                                             |
-| DOMAIN          | localhost (guestmeapp.heroku.com in production, if not specified defaults to localhost) |
+| Key               | Value                                                                                   |
+| ----------------- | --------------------------------------------------------------------------------------- |
+| PORT              | 8080                                                                                    |
+| DB_DIALECT        | MongoDB                                                                                 |
+| DB_HOST           | MongoDB Atlas                                                                           |
+| DATABASE_ACCESS   | Contact Admin for database url                                                          |
+| DB_NAME           | guest_me_app                                                                            |
+| MODE              | development                                                                             |
+| DOMAIN            | localhost (guestmeapp.heroku.com in production, if not specified defaults to localhost) |
+| JWT_SECRET_ACCESS | JWT Secret get from Heroku or generate using node crypto module                         |
 
 ---
 
@@ -104,15 +106,9 @@ Ensure you first run `npm install`. Then there are two methods to run the app:
 
 1. Ensure your machine is connected to the Internet for database access to MongoDB Atlas Cloud.
 
-2. `npm run dev` will start the application in development mode. The application should hot reload after saving changes to a file
+2. `npm run start` will start the application in development mode. The application should hot reload after saving changes to a file
 
-**Production**
-
-1. `npm run build` to build the application
-
-Please work off of the `dev` branch. Changes on `main` branch are ready for live deployment.
-
----
+3. Whenever a new endpoint is added, please also add it to the `endpoints` folder.
 
 ### Testing
 
