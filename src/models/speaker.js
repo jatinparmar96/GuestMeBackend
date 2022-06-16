@@ -5,6 +5,23 @@ const speakerSchema = new Schema({
   userName: {
     type: String,
   },
+  userLastname: {
+    type: String,
+  },
+  location: {
+    type: String,
+  },
+  profilePicture: {
+    type: String,
+  },
+  contact: mongoose.Schema({
+    phone: {
+      type: String,
+    },
+    email: {
+      type: String,
+    },
+  }),
   credentials: mongoose.Schema({
     email: {
       type: String,
@@ -13,6 +30,41 @@ const speakerSchema = new Schema({
     password: {
       type: String,
       required: true,
+    },
+  }),
+  conditions: mongoose.Schema({
+    isInPerson: {
+      type: Boolean,
+    },
+    isOnline: {
+      type: Boolean,
+    },
+    rate: {
+      type: Number,
+    },
+    areas: {
+      type: [String],
+    },
+    interests: {
+      type: [String],
+    },
+    videos: {
+      type: [String],
+    },
+    certifications: {
+      type: [String],
+    },
+    about: {
+      type: String,
+    },
+    availability: {
+      type: [Date],
+    },
+    language: {
+      type: [String],
+    },
+    notificationCount: {
+      type: Number,
     },
   }),
 });
