@@ -32,10 +32,14 @@ exports.register = async (req, res, next) => {
     }
 
     const speaker = new Speaker({
-      userName,
+      userName: userName,
+      userLastname: userLastname,
       credentials: {
         email: email,
         password: await generateHash(password),
+      },
+      contact: {
+        email: email,
       },
     });
 
@@ -69,7 +73,7 @@ exports.login = async (req, res, next) => {
   try {
     const { email } = req.body;
     const password = await generateHash(req.body.password ?? '');
-    let speaker=await Speaker.findOne({ 'credentials.email': email });
+    let speaker = await Speaker.findOne({ 'credentials.email': email });
 
     if (speaker === null) {
       const error = new AuthenticationError('Invalid credentials');
