@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const Speaker = require('../models/speaker');
 const jwt = require('jsonwebtoken');
 const { generateHash } = require('../utils/utils');
+// Auth Error
 const AuthenticationError = require('../errors/AuthenticationError');
 
 /**
