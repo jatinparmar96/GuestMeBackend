@@ -7,10 +7,11 @@ POST http://localhost:8080/speakers/register
 content-type: application/json
 
 {
-  "name": "test3@email.com",
-  "email":"test3@email.com",
-  "confirmPassword":"secret",
-  "password":"secret"
+  "userName": "Joyce",
+  "userLastname":"Smith",
+  "email":"test4@email.com",
+  "confirmPassword":"topsecret",
+  "password":"topsecret"
 }
 
 ###

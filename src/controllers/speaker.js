@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const { generateHash } = require('../utils/utils');
 // Auth Error
 const AuthenticationError = require('../errors/AuthenticationError');
+const { regSchema } = require('../middleware/validation_speakerRegSchema');
 
 /**
  * Handle registration of speaker and send token back.
@@ -17,6 +18,8 @@ exports.register = async (req, res, next) => {
   try {
     const { userName, userLastname, email, password, confirmPassword } =
       req.body;
+    const result = await regSchema.validateAsync(req.body);
+
     const readySpeaker = await Speaker.find({ 'credentials.email': email });
     if (readySpeaker.length > 0) {
       const error = new AuthenticationError(
@@ -26,11 +29,11 @@ exports.register = async (req, res, next) => {
       throw error;
     }
 
-    if (password !== confirmPassword) {
-      const error = new AuthenticationError('Passwords do not match');
-      error.statusCode = 402;
-      throw error;
-    }
+    // if (password !== confirmPassword) {
+    //   const error = new AuthenticationError('Passwords do not match');
+    //   error.statusCode = 402;
+    //   throw error;
+    // }
 
     const speaker = new Speaker({
       userName: userName,
