@@ -82,19 +82,20 @@ exports.register = async (req, res, next) => {
 exports.login = async (req, res, next) => {
   try {
     const result = await logSchema.validateAsync(req.body);
-    const { email } = req.body;
-    const password = await generateHash(req.body.password ?? '');
-    let speaker = await Speaker.findOne({ 'credentials.email': email });
+    // const password = await generateHash(req.body.password ?? '');
+    let speaker = await Speaker.findOne({ 'credentials.email': result.email });
 
-    if (speaker === null) {
-      const error = new AuthenticationError('Invalid credentials');
-      console.log('error: ', error);
-      error.statusCode = 404;
-      throw error;
+    if (!speaker) {
+      // const error = new AuthenticationError('Invalid credentials');
+      // console.log('error: ', error);
+      // error.statusCode = 404;
+      // throw error;
+      throw createError.NotFound('User not registered');
     }
 
-    const valid = await bcrypt.compare(req.body.password, password);
-    if (valid) {
+    const valid = await speaker.isValidPassword(result.password);
+    if (!valid) throw createError.Unauthorized('Username/password not valid');
+    else {
       const token = jwt.sign(
         { email: speaker.credentials.email, id: speaker._id },
         process.env.JWT_SECRET_ACCESS,
@@ -105,10 +106,6 @@ exports.login = async (req, res, next) => {
        * password field
        */
       res.status(200).send({ token });
-    } else {
-      const error = new AuthenticationError('Invalid credentials');
-      error.statusCode = 404;
-      throw error;
     }
   } catch (error) {
     if (error.isJoi === true)

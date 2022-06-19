@@ -19,8 +19,8 @@ POST  http://localhost:8080/speakers/login
 content-type: application/json
 
 {
-  "name": "randomuser 4",
-  "password":"secret"
+  "email": "test4@email.com",
+  "password":"topsecret"
 }
 
 ###
