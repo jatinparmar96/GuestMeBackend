@@ -17,14 +17,14 @@ const Joi = require('joi');
  */
 exports.register = async (req, res, next) => {
   try {
-    const { userName, userLastname, email, password, confirmPassword } =
-      req.body;
     const result = await regSchema.validateAsync(req.body);
 
-    const readySpeaker = await Speaker.find({ 'credentials.email': email });
+    const readySpeaker = await Speaker.find({
+      'credentials.email': result.email,
+    });
     if (readySpeaker.length > 0) {
       const error = new AuthenticationError(
-        'This email has already been registered'
+        `${result.email} has already been registered`
       );
       error.statusCode = 401;
       throw error;
@@ -37,14 +37,14 @@ exports.register = async (req, res, next) => {
     // }
 
     const speaker = new Speaker({
-      userName: userName,
-      userLastname: userLastname,
+      userName: result.userName,
+      userLastname: result.userLastname,
       credentials: {
-        email: email,
-        password: await generateHash(password),
+        email: result.email,
+        password: await generateHash(result.password),
       },
       contact: {
-        email: email,
+        email: result.email,
       },
     });
 
