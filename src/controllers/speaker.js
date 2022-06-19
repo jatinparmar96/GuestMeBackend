@@ -5,6 +5,7 @@ const { generateHash } = require('../utils/utils');
 // Auth Error
 const AuthenticationError = require('../errors/AuthenticationError');
 const { regSchema } = require('../middleware/validation_speakerRegSchema');
+const Joi = require('joi');
 
 /**
  * Handle registration of speaker and send token back.
@@ -60,6 +61,8 @@ exports.register = async (req, res, next) => {
       token,
     });
   } catch (error) {
+    if (error.isJoi === true) error.statusCode = 422;
+
     next(error);
   }
 };
