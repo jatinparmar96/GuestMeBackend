@@ -4,8 +4,10 @@ const jwt = require('jsonwebtoken');
 const { generateHash } = require('../utils/utils');
 // Auth Error
 const AuthenticationError = require('../errors/AuthenticationError');
-const { regSchema } = require('../middleware/validation_speakerRegSchema');
-const Joi = require('joi');
+const {
+  regSchema,
+  logSchema,
+} = require('../middleware/validation_speakerSchema');
 
 /**
  * Handle registration of speaker and send token back.
@@ -78,6 +80,7 @@ exports.register = async (req, res, next) => {
  */
 exports.login = async (req, res, next) => {
   try {
+    const result = await logSchema.validateAsync(req.body);
     const { email } = req.body;
     const password = await generateHash(req.body.password ?? '');
     let speaker = await Speaker.findOne({ 'credentials.email': email });
