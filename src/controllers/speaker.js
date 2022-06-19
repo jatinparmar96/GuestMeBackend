@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const Speaker = require('../models/speaker');
 const jwt = require('jsonwebtoken');
+const createError = require('http-errors');
 const { generateHash } = require('../utils/utils');
 // Auth Error
 const AuthenticationError = require('../errors/AuthenticationError');
@@ -110,7 +111,10 @@ exports.login = async (req, res, next) => {
       throw error;
     }
   } catch (error) {
+    if (error.isJoi === true)
+      return next(createError.BadRequest('Invalid Username/Password'));
     console.error(error);
+
     next(error);
   }
 };
