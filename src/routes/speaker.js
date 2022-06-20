@@ -9,14 +9,16 @@ router.post('/register', speakerController.register);
 
 router.post('/login', speakerController.login);
 
-// Initially back 10 speakers
-/**
- * Only for Testing, Speaker Middleware from here will need to be removed.
- */
-router.get(
-  '/',
-  speakerController.getSpeakers
+//Update Speaker Profile
+router.post(
+  '/update/profile',
+  SpeakerAuthMiddleware,
+  speakerController.updateProfile
 );
+
+// Initially back 10 speakers
+
+router.get('/', speakerController.getSpeakers);
 
 // router.post('/update', speakerController.update);
 

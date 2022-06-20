@@ -6,6 +6,7 @@ const { generateHash } = require('../utils/utils');
 const AuthenticationError = require('../errors/AuthenticationError');
 
 /**
+ *! Register Speaker
  * Handle registration of speaker and send token back.
  * TODO:
  * Validation, If Speaker already exists respond with status code (409 Conflict or 422 Unprocessable Entity)
@@ -62,7 +63,7 @@ exports.register = async (req, res, next) => {
 };
 
 /**
- * Sign In the Speaker
+ *! Sign In the Speaker
  * TODO: Maybe Send user Object back without password included
  * @param {import('express').Request<{}, {}, SpeakerLoginRequestBody, {}>} req
  * @param {import('express').Response} res
@@ -107,14 +108,38 @@ exports.login = async (req, res, next) => {
 };
 
 /**
+ *! GET SPEAKERS
  * TODO: req will take parameters -> limit, offset, all
  *  */
 exports.getSpeakers = async (req, res, next) => {
   const speakers = await Speaker.find({});
   res.json(speakers);
 };
-
 /**
  * @typedef {import('./speaker.controller').SpeakerRegisterRequestBody} SpeakerRegisterRequestBody
  * @typedef {import('./speaker.controller').SpeakerLoginRequestBody} SpeakerLoginRequestBody
  */
+
+/**
+ *! Update Speaker Profile
+ * TODO: Add Validation to data
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
+exports.updateProfile = async (req, res, next) => {
+  const user = await Speaker.findById(req.authToken.id);
+  const userData = req.body;
+
+  console.log(req.body);
+  // Don't allow to update password through here.
+  if (userData.password) {
+    delete userData.password;
+  }
+  Object.keys(userData).forEach((key) => {
+    user[key] = userData[key];
+  });
+
+  await user.save();
+  res.json(user);
+};

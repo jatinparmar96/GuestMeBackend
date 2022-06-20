@@ -2,10 +2,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const speakerSchema = new Schema({
-  userName: {
+  firstName: {
     type: String,
   },
-  userLastname: {
+  lastName: {
     type: String,
   },
   location: {
