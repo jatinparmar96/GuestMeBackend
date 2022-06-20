@@ -64,7 +64,8 @@ exports.register = async (req, res, next) => {
       token,
     });
   } catch (error) {
-    if (error.isJoi === true) error.statusCode = 422;
+    if (error.isJoi === true)
+      return next(createError.UnprocessableEntity(error.message));
 
     next(error);
   }
