@@ -3,10 +3,10 @@ const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt');
 
 const speakerSchema = new Schema({
-  userName: {
+  firstName: {
     type: String,
   },
-  userLastname: {
+  lastName: {
     type: String,
   },
   location: {
