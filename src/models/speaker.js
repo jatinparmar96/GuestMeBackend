@@ -99,5 +99,9 @@ speakerSchema.virtual('reviewsQuantity', {
   count: true,
 });
 
+speakerSchema.virtual('fullName').get(function () {
+  return this.firstName + ' ' + this.lastName;
+});
+
 const Speaker = mongoose.model('Speaker', speakerSchema);
 module.exports = Speaker;

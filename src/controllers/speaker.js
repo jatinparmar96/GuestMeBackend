@@ -147,13 +147,13 @@ exports.updateProfile = async (req, res, next) => {
 
 /**
  *! GET SPEAKER
- * TODO: Add review count and check conditons subcollection
+ * TODO: Check conditons subcollection
  *  */
 exports.getSpeaker = (req, res) => {
   Speaker.findOne({ _id: req.params.id })
     .populate('reviews')
     .populate('reviewsQuantity')
-    .select('firstName lastName profilePicture location conditions')
+    .select('fullName profilePicture location conditions')
     .exec()
     .then((result) => {
       res.status(200).json(result);
