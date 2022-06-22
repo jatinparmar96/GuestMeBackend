@@ -19,9 +19,17 @@ POST  http://localhost:8080/speakers/login
 content-type: application/json
 
 {
-  "email": "test4@email.com",
+  "speakerID": "",
   "password":"topsecret"
 }
+
+    speakerID: req.body.speakerID,
+    organization: {
+      id: req.body.id,
+      name: req.body.name,
+    },
+    rating: req.body.rating,
+    comment: req.body.comment,
 
 ###
 GET http://localhost:8080/speakers/

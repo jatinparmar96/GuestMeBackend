@@ -6,8 +6,8 @@ content-type: application/json
 
 {
   "speakerID": "62af5fb317f8d0a3e1fb7d5f",
-  "id":"60",
-  "name":"test testfs",
-  "rating":"4",
-  "comment":"test test"
+  "id":"65",
+  "name":"Neptune",
+  "rating":"5",
+  "comment":"bad good bad good"
 }
