@@ -1,0 +1,13 @@
+GET http://localhost:8080/reviews/
+
+###
+POST http://localhost:8080/reviews
+content-type: application/json
+
+{
+  "speakerID": "62af5fb317f8d0a3e1fb7d5f",
+  "id":"60",
+  "name":"test testfs",
+  "rating":"4",
+  "comment":"test test"
+}
