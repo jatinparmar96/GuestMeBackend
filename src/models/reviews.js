@@ -35,4 +35,6 @@ const reviewsSchema = new Schema({
   },
 });
 
+reviewsSchema.set('timestamps', true);
+
 module.exports = mongoose.model('Reviews', reviewsSchema);

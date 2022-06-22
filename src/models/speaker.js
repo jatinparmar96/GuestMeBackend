@@ -76,6 +76,7 @@ const speakerSchema = new Schema(
     toObject: { virutals: true },
   }
 );
+speakerSchema.set('timestamps', true);
 
 speakerSchema.methods.isValidPassword = async function (password) {
   try {
