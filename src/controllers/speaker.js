@@ -1,4 +1,3 @@
-const bcrypt = require('bcrypt');
 const Speaker = require('../models/speaker');
 const jwt = require('jsonwebtoken');
 const createError = require('http-errors');
@@ -9,6 +8,7 @@ const {
   regSchema,
   logSchema,
 } = require('../middleware/validation_speakerSchema');
+const { restart } = require('nodemon');
 
 /**
  *! Register Speaker
@@ -33,12 +33,6 @@ exports.register = async (req, res, next) => {
       error.statusCode = 401;
       throw error;
     }
-
-    // if (password !== confirmPassword) {
-    //   const error = new AuthenticationError('Passwords do not match');
-    //   error.statusCode = 402;
-    //   throw error;
-    // }
 
     const speaker = new Speaker({
       userName: result.userName,
@@ -88,10 +82,6 @@ exports.login = async (req, res, next) => {
     let speaker = await Speaker.findOne({ 'credentials.email': result.email });
 
     if (!speaker) {
-      // const error = new AuthenticationError('Invalid credentials');
-      // console.log('error: ', error);
-      // error.statusCode = 404;
-      // throw error;
       throw createError.NotFound('User not registered');
     }
 
@@ -153,4 +143,18 @@ exports.updateProfile = async (req, res, next) => {
 
   await user.save();
   res.json(user);
+};
+
+/**
+ *! GET SPEAKER
+ *
+ *  */
+exports.getSpeaker = (req, res) => {
+  Speaker.findOne({ _id: req.params.id })
+    .select('')
+    .exec()
+    .then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((error) => res.status(500).json(error));
 };
