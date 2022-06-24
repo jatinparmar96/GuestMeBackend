@@ -1,11 +1,17 @@
 const bcrypt = require('bcrypt');
 const Speaker = require('../models/speaker');
 const jwt = require('jsonwebtoken');
+const createError = require('http-errors');
 const { generateHash } = require('../utils/utils');
 // Auth Error
 const AuthenticationError = require('../errors/AuthenticationError');
+const {
+  regSchema,
+  logSchema,
+} = require('../middleware/validation_speakerSchema');
 
 /**
+ *! Register Speaker
  * Handle registration of speaker and send token back.
  * TODO:
  * Validation, If Speaker already exists respond with status code (409 Conflict or 422 Unprocessable Entity)
@@ -15,32 +21,34 @@ const AuthenticationError = require('../errors/AuthenticationError');
  */
 exports.register = async (req, res, next) => {
   try {
-    const { userName, userLastname, email, password, confirmPassword } =
-      req.body;
-    const readySpeaker = await Speaker.find({ 'credentials.email': email });
+    const result = await regSchema.validateAsync(req.body);
+
+    const readySpeaker = await Speaker.find({
+      'credentials.email': result.email,
+    });
     if (readySpeaker.length > 0) {
       const error = new AuthenticationError(
-        'This email has already been registered'
+        `${result.email} has already been registered`
       );
       error.statusCode = 401;
       throw error;
     }
 
-    if (password !== confirmPassword) {
-      const error = new AuthenticationError('Passwords do not match');
-      error.statusCode = 402;
-      throw error;
-    }
+    // if (password !== confirmPassword) {
+    //   const error = new AuthenticationError('Passwords do not match');
+    //   error.statusCode = 402;
+    //   throw error;
+    // }
 
     const speaker = new Speaker({
-      userName: userName,
-      userLastname: userLastname,
+      userName: result.userName,
+      userLastname: result.userLastname,
       credentials: {
-        email: email,
-        password: await generateHash(password),
+        email: result.email,
+        password: await generateHash(result.password),
       },
       contact: {
-        email: email,
+        email: result.email,
       },
     });
 
@@ -57,12 +65,15 @@ exports.register = async (req, res, next) => {
       token,
     });
   } catch (error) {
+    if (error.isJoi === true)
+      return next(createError.UnprocessableEntity(error.message));
+
     next(error);
   }
 };
 
 /**
- * Sign In the Speaker
+ *! Sign In the Speaker
  * TODO: Maybe Send user Object back without password included
  * @param {import('express').Request<{}, {}, SpeakerLoginRequestBody, {}>} req
  * @param {import('express').Response} res
@@ -72,19 +83,21 @@ exports.register = async (req, res, next) => {
  */
 exports.login = async (req, res, next) => {
   try {
-    const { email } = req.body;
-    const password = await generateHash(req.body.password ?? '');
-    let speaker = await Speaker.findOne({ 'credentials.email': email });
+    const result = await logSchema.validateAsync(req.body);
+    // const password = await generateHash(req.body.password ?? '');
+    let speaker = await Speaker.findOne({ 'credentials.email': result.email });
 
-    if (speaker === null) {
-      const error = new AuthenticationError('Invalid credentials');
-      console.log('error: ', error);
-      error.statusCode = 404;
-      throw error;
+    if (!speaker) {
+      // const error = new AuthenticationError('Invalid credentials');
+      // console.log('error: ', error);
+      // error.statusCode = 404;
+      // throw error;
+      throw createError.NotFound('User not registered');
     }
 
-    const valid = await bcrypt.compare(req.body.password, password);
-    if (valid) {
+    const valid = await speaker.isValidPassword(result.password);
+    if (!valid) throw createError.Unauthorized('Username/password not valid');
+    else {
       const token = jwt.sign(
         { email: speaker.credentials.email, id: speaker._id },
         process.env.JWT_SECRET_ACCESS,
@@ -95,26 +108,49 @@ exports.login = async (req, res, next) => {
        * password field
        */
       res.status(200).send({ token });
-    } else {
-      const error = new AuthenticationError('Invalid credentials');
-      error.statusCode = 404;
-      throw error;
     }
   } catch (error) {
+    if (error.isJoi === true)
+      return next(createError.BadRequest('Invalid Username/Password'));
     console.error(error);
+
     next(error);
   }
 };
 
 /**
+ *! GET SPEAKERS
  * TODO: req will take parameters -> limit, offset, all
  *  */
 exports.getSpeakers = async (req, res, next) => {
   const speakers = await Speaker.find({});
   res.json(speakers);
 };
-
 /**
  * @typedef {import('./speaker.controller').SpeakerRegisterRequestBody} SpeakerRegisterRequestBody
  * @typedef {import('./speaker.controller').SpeakerLoginRequestBody} SpeakerLoginRequestBody
  */
+
+/**
+ *! Update Speaker Profile
+ * TODO: Add Validation to data
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
+exports.updateProfile = async (req, res, next) => {
+  const user = await Speaker.findById(req.authToken.id);
+  const userData = req.body;
+
+  console.log(req.body);
+  // Don't allow to update password through here.
+  if (userData.password) {
+    delete userData.password;
+  }
+  Object.keys(userData).forEach((key) => {
+    user[key] = userData[key];
+  });
+
+  await user.save();
+  res.json(user);
+};
