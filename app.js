@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 
 const speakerRoutes = require('./src/routes/speaker');
+const reviewRoutes = require('./src/routes/review');
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.use(cors());
 const Schema = mongoose.Schema;
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); //parse form data
 // app.use((req, res, next) => {
 //   res.setHeader('Access-Control-Allow-Origin', '*');
 //   res.setHeader(
@@ -23,6 +25,7 @@ app.use(express.json());
 // });
 
 app.use('/speakers', speakerRoutes);
+app.use('/reviews', reviewRoutes);
 
 app.get('/', (req, res) => {
   res.send('Hello GuesteaBackend');
