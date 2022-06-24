@@ -8,7 +8,6 @@ const {
   regSchema,
   logSchema,
 } = require('../middleware/validation_speakerSchema');
-const { restart } = require('nodemon');
 
 /**
  *! Register Speaker
