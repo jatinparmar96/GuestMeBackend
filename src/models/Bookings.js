@@ -55,6 +55,10 @@ const bookingsSchema = new Schema({
   personInCharge: ({
     type: String
   }),
+  deliveryMethod: ({
+    type: String,
+    enum: ['isInPerson','isOnline']
+  })
 });
-
+bookingsSchema.set('timestamps', true);
 module.exports = mongoose.model('Bookings', bookingsSchema);

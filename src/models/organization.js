@@ -11,6 +11,15 @@ const organizationSchema = new Schema({
   profilePicture: {
     type: String,
   },
+  address: {
+    type: String,
+  },
+  postalCode: {
+    type: String,
+  },
+  phone: {
+    type: String,
+  },
   contact: mongoose.Schema({
     phone: {
       type: String,
@@ -47,5 +56,6 @@ const organizationSchema = new Schema({
     type: Number
   })
 });
+organizationSchema.set('timestamps', true);
 
 module.exports = mongoose.model('Organization', organizationSchema);
