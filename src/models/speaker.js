@@ -45,6 +45,9 @@ const speakerSchema = new Schema(
       rate: {
         type: Number,
       },
+      price: {
+        type: Number,
+      },
       areas: {
         type: [String],
       },
