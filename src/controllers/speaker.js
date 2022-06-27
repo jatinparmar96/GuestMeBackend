@@ -152,7 +152,7 @@ exports.getSpeaker = (req, res) => {
   Speaker.findOne({ _id: req.params.id })
     .populate('reviews')
     .populate('reviewsQuantity')
-    .select('fullName profilePicture location conditions')
+    .select('firstName lastName profilePicture location conditions')
     .exec()
     .then((result) => {
       res.status(200).json(result);
