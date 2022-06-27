@@ -167,18 +167,17 @@ exports.getSpeakers = async (req, res, next) => {
       query = { ...query, $and: andQuery };
     }
 
-    console.log('query: ', query);
     const speakers = await Speaker.find(query)
       .populate('reviews')
       .populate('reviewsQuantity')
-      .select('fullName profilePicture location conditions firstName lastName')
+      .select(
+        'fullName profilePicture location conditions firstName lastName tagline'
+      )
       .exec()
-      .then((result) => {
-        res.status(200).json(result);
-      })
       .catch((error) => res.status(500).json(error));
 
-    res.json(speakers);
+    const count = await Speaker.count(query);
+    res.status(200).json({ speakers: speakers, count: count });
   } catch (error) {
     console.log('error: ', error);
     return next(error);
