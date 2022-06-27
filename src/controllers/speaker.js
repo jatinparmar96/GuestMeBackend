@@ -151,7 +151,7 @@ exports.getSpeakers = async (req, res, next) => {
 
     if (interests && interests.length > 0) {
       let interestsQuery = interests.map((interest) => {
-        return { 'conditions.language': interest };
+        return { 'conditions.interests': interest };
       });
       andQuery.push({ $or: interestsQuery });
     }
@@ -171,7 +171,7 @@ exports.getSpeakers = async (req, res, next) => {
     const speakers = await Speaker.find(query)
       .populate('reviews')
       .populate('reviewsQuantity')
-      .select('fullName profilePicture location conditions')
+      .select('fullName profilePicture location conditions firstName lastName')
       .exec()
       .then((result) => {
         res.status(200).json(result);
