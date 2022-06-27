@@ -227,3 +227,10 @@ exports.getSpeaker = (req, res) => {
     })
     .catch((error) => res.status(500).json(error));
 };
+
+exports.getMaxPrice = async (req, res, next) => {
+  const result = await Speaker.findOne({})
+    .sort('-conditions.price')
+    .select('conditions.price');
+  res.status(200).json({ maxPrice: result.conditions.price });
+};
