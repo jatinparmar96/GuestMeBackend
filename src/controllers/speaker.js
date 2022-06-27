@@ -9,6 +9,7 @@ const {
   regSchema,
   logSchema,
 } = require('../middleware/validation_speakerSchema');
+const { s3, s3Bucket } = require('../utils/aws-service');
 
 /**
  *! Register Speaker
@@ -142,7 +143,35 @@ exports.updateProfile = async (req, res, next) => {
   const user = await Speaker.findById(req.authToken.id);
   const userData = req.body;
 
-  console.log(req.body);
+  if (userData.profilePicture) {
+    let fileName = new Date().getTime().toString();
+
+    // If file already exists, replace data only
+    if (user.profilePicture) {
+      fileName = user.profilePicture.split('/').at(-1);
+    }
+    // Remove content Type from base64 string
+    let imageData = Buffer.from(
+      userData.profilePicture.replace(/^data:image\/\w+;base64,/, ''),
+      'base64'
+    );
+
+    // S3 Params
+    const s3Params = {
+      Bucket: s3Bucket,
+      Key: fileName,
+      Expires: 3600,
+      ContentEncoding: 'base64',
+      ContentType: 'image/png',
+      ACL: 'public-read',
+      Body: imageData,
+    };
+    const response = await s3.upload(s3Params).promise();
+    if (response) {
+      userData.profilePicture = response.Location;
+    }
+  }
+
   // Don't allow to update password through here.
   if (userData.password) {
     delete userData.password;
@@ -151,6 +180,6 @@ exports.updateProfile = async (req, res, next) => {
     user[key] = userData[key];
   });
 
-  await user.save();
+  //await user.save();
   res.json(user);
 };
