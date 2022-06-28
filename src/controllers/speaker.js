@@ -116,18 +116,18 @@ exports.getSpeakers = async (req, res, next) => {
     const { isInPerson, isOnline, priceMin, priceMax } = req.query;
     const areas = req.query?.areas?.split('_');
     const language = req.query?.language?.split('_');
-    const interests = req.query?.interests?.split('_');
     const locations = req.query?.location?.split('_');
 
     let query = {};
     let andQuery = [];
 
-    if (isInPerson) {
-      query['conditions.isInPerson'] = isInPerson;
+    if (isInPerson && !isOnline) {
+      query['conditions.isInPerson'] = isInPerson ? true : false;
     }
-    if (isOnline) {
-      query['conditions.isOnline'] = isOnline;
+    if (!isInPerson && isOnline) {
+      query['conditions.isOnline'] = isOnline ? true : false;
     }
+
     if (priceMin || priceMax) {
       query['conditions.price'] = {
         $gte: priceMin ?? 0,
@@ -149,16 +149,9 @@ exports.getSpeakers = async (req, res, next) => {
       andQuery.push({ $or: languageQuery });
     }
 
-    if (interests && interests.length > 0) {
-      let interestsQuery = interests.map((interest) => {
-        return { 'conditions.interests': interest };
-      });
-      andQuery.push({ $or: interestsQuery });
-    }
-
     if (locations && locations.length > 0) {
       let locationQuery = locations.map((location) => {
-        return { 'conditions.locations': location };
+        return { location: location };
       });
       andQuery.push({ $or: locationQuery });
     }
@@ -173,6 +166,7 @@ exports.getSpeakers = async (req, res, next) => {
       .select(
         'fullName profilePicture location conditions firstName lastName tagline'
       )
+      .limit(10)
       .exec()
       .catch((error) => res.status(500).json(error));
 
@@ -232,5 +226,5 @@ exports.getMaxPrice = async (req, res, next) => {
   const result = await Speaker.findOne({})
     .sort('-conditions.price')
     .select('conditions.price');
-  res.status(200).json({ maxPrice: result.conditions.price });
+  res.status(200).json({ maxPrice: result?.conditions?.price || 0 });
 };

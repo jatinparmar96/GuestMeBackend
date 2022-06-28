@@ -21,23 +21,23 @@ const speakerSchema = new Schema(
       type: String,
     },
     skills: {
-      type:[String]
+      type: [String],
     },
     videos: {
       type: String,
     },
     certifications: {
-        type: [String],
-      },
-    about: {
-        type: String,
+      type: [String],
     },
-     availability: {
-        type: [Date],
+    about: {
+      type: String,
+    },
+    availability: {
+      type: [Date],
     },
     notificationCount: {
-        type: Number,
-      },
+      type: Number,
+    },
     contact: mongoose.Schema({
       phone: {
         type: String,
@@ -66,17 +66,12 @@ const speakerSchema = new Schema(
       price: {
         type: Number,
       },
-      price: {
-        type: Number,
-      },
       areas: {
         type: [String],
       },
-
       language: {
         type: [String],
       },
-
     }),
   },
   {
