@@ -14,9 +14,30 @@ const speakerSchema = new Schema(
     location: {
       type: String,
     },
+    tagLine: {
+      type: String,
+    },
     profilePicture: {
       type: String,
     },
+    skills: {
+      type:[String]
+    },
+    videos: {
+      type: String,
+    },
+    certifications: {
+        type: [String],
+      },
+    about: {
+        type: String,
+    },
+     availability: {
+        type: [Date],
+    },
+    notificationCount: {
+        type: Number,
+      },
     contact: mongoose.Schema({
       phone: {
         type: String,
@@ -42,7 +63,7 @@ const speakerSchema = new Schema(
       isOnline: {
         type: Boolean,
       },
-      rate: {
+      price: {
         type: Number,
       },
       price: {
@@ -51,27 +72,11 @@ const speakerSchema = new Schema(
       areas: {
         type: [String],
       },
-      interests: {
-        type: [String],
-      },
-      videos: {
-        type: [String],
-      },
-      certifications: {
-        type: [String],
-      },
-      about: {
-        type: String,
-      },
-      availability: {
-        type: [Date],
-      },
+
       language: {
         type: [String],
       },
-      notificationCount: {
-        type: Number,
-      },
+
     }),
   },
   {
