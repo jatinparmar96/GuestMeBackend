@@ -73,16 +73,19 @@ Then copy and paste the following into the file and save:
 
 ### Env File
 
-| Key               | Value                                                                                   |
-| ----------------- | --------------------------------------------------------------------------------------- |
-| PORT              | 8080                                                                                    |
-| DB_DIALECT        | MongoDB                                                                                 |
-| DB_HOST           | MongoDB Atlas                                                                           |
-| DATABASE_ACCESS   | Contact Admin for database url                                                          |
-| DB_NAME           | guest_me_app                                                                            |
-| MODE              | development                                                                             |
-| DOMAIN            | localhost (guestmeapp.heroku.com in production, if not specified defaults to localhost) |
-| JWT_SECRET_ACCESS | JWT Secret get from Heroku or generate using node crypto module                         |
+| Key                   | Value                                                                                   |
+| --------------------- | --------------------------------------------------------------------------------------- |
+| PORT                  | 8080                                                                                    |
+| DB_DIALECT            | MongoDB                                                                                 |
+| DB_HOST               | MongoDB Atlas                                                                           |
+| DATABASE_ACCESS       | Contact Admin for database url                                                          |
+| DB_NAME               | guest_me_app                                                                            |
+| MODE                  | development                                                                             |
+| DOMAIN                | localhost (guestmeapp.heroku.com in production, if not specified defaults to localhost) |
+| JWT_SECRET_ACCESS     | JWT Secret get from Heroku or generate using node crypto module                         |
+| AWS_ACCESS_KEY_ID     | Get from admin                                                                          |
+| AWS_SECRET_ACCESS_KEY | Get from admin                                                                          |
+| S3_BUCKET             | teamneptune                                                                             |
 
 ---
 
