@@ -24,7 +24,7 @@ exports.seedSpeaker = async function seedSpeaker() {
       'Diploma in Computer Science',
       'Diploma in Mechatronics',
     ]);
-    speaker.profilePicture = 'https://picsum.photos/200/200/' + i;
+    speaker.profilePicture = `https://picsum.photos/seed/${i + 1}/400/400/`;
     speaker.about = faker.lorem.sentence();
     speaker.availability = faker.helpers.arrayElement([
       faker.date.future(),
