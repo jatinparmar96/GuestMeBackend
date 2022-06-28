@@ -152,9 +152,13 @@ exports.getSpeaker = (req, res) => {
   Speaker.findOne({ _id: req.params.id })
     .populate('reviews')
     .populate('reviewsQuantity')
+<<<<<<< HEAD
     .select(
       'firstName lastName profilePicture location tagLine skills videos certifications about availability conditions'
     )
+=======
+    .select('firstName lastName profilePicture location conditions')
+>>>>>>> ce147488d76df91adda2ae60530a20d37be4d287
     .exec()
     .then((result) => {
       res.status(200).json(result);
