@@ -79,6 +79,7 @@ exports.login = async (req, res, next) => {
     const result = await logSchema.validateAsync(req.body);
     // const password = await generateHash(req.body.password ?? '');
     let speaker = await Speaker.findOne({ 'credentials.email': result.email });
+    console.log(result.email);
 
     if (!speaker) {
       throw createError.NotFound('User not registered');
