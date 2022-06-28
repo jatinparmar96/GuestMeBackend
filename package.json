@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/jatinparmar96/GuesteaBackend#readme",
   "dependencies": {
+    "aws-sdk": "^2.1162.0",
     "bcrypt": "^5.0.1",
     "chai": "^4.3.6",
     "cors": "^2.8.5",

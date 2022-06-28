@@ -7,6 +7,7 @@ const {
   updateProfile,
   getSpeakers,
   getSpeaker,
+  getMaxPrice,
 } = require('../controllers/speaker');
 const {
   SpeakerAuthMiddleware,
@@ -19,8 +20,10 @@ router.post('/login', login);
 //Update Speaker Profile
 router.post('/update/profile', SpeakerAuthMiddleware, updateProfile);
 
-// Initially back 10 speakers
+// Get max price of speakers
+router.get('/max-price', getMaxPrice);
 
+// Initially back 10 speakers
 router.get('/', getSpeakers);
 
 // router.post('/update', speakerController.update);

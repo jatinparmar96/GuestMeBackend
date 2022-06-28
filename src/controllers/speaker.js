@@ -8,6 +8,7 @@ const {
   regSchema,
   logSchema,
 } = require('../middleware/validation_speakerSchema');
+const { s3, s3Bucket } = require('../utils/aws-service');
 
 /**
  *! Register Speaker
@@ -113,8 +114,70 @@ exports.login = async (req, res, next) => {
  * TODO: req will take parameters -> limit, offset, all
  *  */
 exports.getSpeakers = async (req, res, next) => {
-  const speakers = await Speaker.find({});
-  res.json(speakers);
+  try {
+    const { isInPerson, isOnline, priceMin, priceMax } = req.query;
+    const areas = req.query?.areas?.split('_');
+    const language = req.query?.language?.split('_');
+    const locations = req.query?.location?.split('_');
+
+    let query = {};
+    let andQuery = [];
+
+    if (isInPerson && !isOnline) {
+      query['conditions.isInPerson'] = isInPerson ? true : false;
+    }
+    if (!isInPerson && isOnline) {
+      query['conditions.isOnline'] = isOnline ? true : false;
+    }
+
+    if (priceMin || priceMax) {
+      query['conditions.price'] = {
+        $gte: priceMin ?? 0,
+        $lte: priceMax ?? Infinity,
+      };
+    }
+
+    if (areas && areas.length > 0) {
+      let areasQuery = areas.map((area) => {
+        return { 'conditions.areas': area };
+      });
+      andQuery.push({ $or: areasQuery });
+    }
+
+    if (language && language.length > 0) {
+      let languageQuery = language.map((lang) => {
+        return { 'conditions.language': lang };
+      });
+      andQuery.push({ $or: languageQuery });
+    }
+
+    if (locations && locations.length > 0) {
+      let locationQuery = locations.map((location) => {
+        return { location: location };
+      });
+      andQuery.push({ $or: locationQuery });
+    }
+
+    if (andQuery.length > 0) {
+      query = { ...query, $and: andQuery };
+    }
+
+    const speakers = await Speaker.find(query)
+      .populate('reviews')
+      .populate('reviewsQuantity')
+      .select(
+        'fullName profilePicture location conditions firstName lastName tagline'
+      )
+      .limit(10)
+      .exec()
+      .catch((error) => res.status(500).json(error));
+
+    const count = await Speaker.count(query);
+    res.status(200).json({ speakers: speakers, count: count });
+  } catch (error) {
+    console.log('error: ', error);
+    return next(error);
+  }
 };
 /**
  * @typedef {import('./speaker.controller').SpeakerRegisterRequestBody} SpeakerRegisterRequestBody
@@ -132,7 +195,35 @@ exports.updateProfile = async (req, res, next) => {
   const user = await Speaker.findById(req.authToken.id);
   const userData = req.body;
 
-  console.log(req.body);
+  if (userData.profilePicture) {
+    let fileName = new Date().getTime().toString();
+
+    // If file already exists, replace data only
+    if (user.profilePicture) {
+      fileName = user.profilePicture.split('/').at(-1);
+    }
+    // Remove content Type from base64 string
+    let imageData = Buffer.from(
+      userData.profilePicture.replace(/^data:image\/\w+;base64,/, ''),
+      'base64'
+    );
+
+    // S3 Params
+    const s3Params = {
+      Bucket: s3Bucket,
+      Key: fileName,
+      Expires: 3600,
+      ContentEncoding: 'base64',
+      ContentType: 'image/png',
+      ACL: 'public-read',
+      Body: imageData,
+    };
+    const response = await s3.upload(s3Params).promise();
+    if (response) {
+      userData.profilePicture = response.Location;
+    }
+  }
+
   // Don't allow to update password through here.
   if (userData.password) {
     delete userData.password;
@@ -141,22 +232,32 @@ exports.updateProfile = async (req, res, next) => {
     user[key] = userData[key];
   });
 
-  await user.save();
+  //await user.save();
   res.json(user);
 };
 
 /**
  *! GET SPEAKER
- * TODO: Check conditons subcollection
+ *
  *  */
 exports.getSpeaker = (req, res) => {
   Speaker.findOne({ _id: req.params.id })
     .populate('reviews')
     .populate('reviewsQuantity')
-    .select('fullName profilePicture location conditions')
+
+    .select(
+      'firstName lastName location tagLine profilePicture skills videos certifications about availability conditions'
+    )
     .exec()
     .then((result) => {
       res.status(200).json(result);
     })
     .catch((error) => res.status(500).json(error));
+};
+
+exports.getMaxPrice = async (req, res, next) => {
+  const result = await Speaker.findOne({})
+    .sort('-conditions.price')
+    .select('conditions.price');
+  res.status(200).json({ maxPrice: result?.conditions?.price || 0 });
 };
