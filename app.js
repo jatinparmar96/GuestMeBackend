@@ -5,6 +5,8 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 
 const speakerRoutes = require('./src/routes/speaker');
+const organizationRoutes = require('./src/routes/organization');
+
 const reviewRoutes = require('./src/routes/review');
 
 const app = express();
@@ -25,6 +27,7 @@ app.use(express.urlencoded({ extended: true })); //parse form data
 // });
 
 app.use('/speakers', speakerRoutes);
+app.use('/organizations', organizationRoutes);
 app.use('/reviews', reviewRoutes);
 
 app.get('/', (req, res) => {
