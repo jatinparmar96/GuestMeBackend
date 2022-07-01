@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const bcrypt = require('bcrypt');
 
 const organizationSchema = new Schema({
   organizationName: {
@@ -40,7 +41,8 @@ const organizationSchema = new Schema({
   }),
   savedSpeakers: mongoose.Schema({
     speakerID: {
-       type: Schema.Types.ObjectId, ref: 'Speaker'
+      type: Schema.Types.ObjectId,
+      ref: 'Speaker',
     },
     speakerName: {
       type: String,
@@ -52,10 +54,18 @@ const organizationSchema = new Schema({
       type: Date,
     },
   }),
-  notificationCount: ({
-    type: Number
-  })
+  notificationCount: {
+    type: Number,
+  },
 });
 organizationSchema.set('timestamps', true);
+
+organizationSchema.methods.isValidPassword = async function (password) {
+  try {
+    return await bcrypt.compare(password, this.credentials.password);
+  } catch (error) {
+    throw error;
+  }
+};
 
 module.exports = mongoose.model('Organization', organizationSchema);
