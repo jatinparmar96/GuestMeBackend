@@ -233,10 +233,20 @@ exports.updateProfile = async (req, res, next) => {
     user[key] = userData[key];
   });
 
-  //await user.save();
+  await user.save();
   res.json(user);
 };
 
+/**
+ * Get Speaker Availability
+ * @param {*} req
+ * @param {*} res
+ *  URL -> /speakers/get-availability/:id
+ */
+exports.getSpeakerAvailability = async (req, res) => {
+  const result = await availabilitySchema.validate(req.params);
+  if (result.error) {
+    return res.send(result.error);
   }
   const id = req.params.id;
   const speaker = await Speaker.findById(id).select('availability');

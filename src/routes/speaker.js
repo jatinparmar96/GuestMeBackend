@@ -8,6 +8,7 @@ const {
   getSpeakers,
   getSpeaker,
   getMaxPrice,
+  getSpeakerAvailability,
 } = require('../controllers/speaker');
 const {
   SpeakerAuthMiddleware,
@@ -27,6 +28,9 @@ router.get('/max-price', getMaxPrice);
 router.get('/', getSpeakers);
 
 // router.post('/update', speakerController.update);
+
+// Get Speaker Availability by id
+router.get('/get-availability/:id?', getSpeakerAvailability);
 
 // Get speaker by id
 router.get('/:id', getSpeaker);
