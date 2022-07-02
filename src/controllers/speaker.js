@@ -248,9 +248,10 @@ exports.getSpeakerAvailability = async (req, res) => {
   if (result.error) {
     return res.send(result.error);
   }
-  const id = req.params.id;
-  const speaker = await Speaker.findById(id).select('availability');
-  res.send(speaker.availability);
+  const speaker = await Speaker.findById(result.value.id).select(
+    'availability'
+  );
+  res.send(speaker?.availability || []);
 };
 
 /**
