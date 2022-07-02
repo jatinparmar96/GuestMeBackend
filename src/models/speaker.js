@@ -75,8 +75,6 @@ const speakerSchema = new Schema(
     }),
   },
   {
-    toJSON: { virtuals: true },
-    toObject: { virutals: true },
   }
 );
 speakerSchema.set('timestamps', true);

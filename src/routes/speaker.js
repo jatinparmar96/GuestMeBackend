@@ -8,6 +8,7 @@ const {
   getSpeakers,
   getSpeaker,
   getMaxPrice,
+  getRandomSpeakers,
 } = require('../controllers/speaker');
 const {
   SpeakerAuthMiddleware,
@@ -25,6 +26,9 @@ router.get('/max-price', getMaxPrice);
 
 // Initially back 10 speakers
 router.get('/', getSpeakers);
+
+//Get 5 random Speakers
+router.get('/random-speakers', getRandomSpeakers);
 
 // router.post('/update', speakerController.update);
 

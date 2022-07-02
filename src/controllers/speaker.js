@@ -244,12 +244,8 @@ exports.getSpeaker = (req, res) => {
     .populate('reviews')
     .populate('reviewsQuantity')
 
-    .select(
-      'firstName lastName location tagLine profilePicture skills videos certifications about availability conditions'
-    )
     .exec()
     .then((result) => {
-      res.status(200).json(result);
     })
     .catch((error) => res.status(500).json(error));
 };
@@ -259,4 +255,21 @@ exports.getMaxPrice = async (req, res, next) => {
     .sort('-conditions.price')
     .select('conditions.price');
   res.status(200).json({ maxPrice: result?.conditions?.price || 0 });
+};
+
+/**
+ * Get Random Speakers
+ * For now Send a sample of 6 random speakers.
+ *
+ * @param  {} req
+ * @param  {} res
+ */
+exports.getRandomSpeakers = async (req, res) => {
+  // !To JSON object doesn't remove from aggregate queries
+  // So unset the fields in the aggregate pipeline itself.
+  const speakers = await Speaker.aggregate([
+    { $sample: { size: 6 } },
+    { $unset: ['credentials.password'] },
+  ]);
+  return res.json(speakers);
 };
