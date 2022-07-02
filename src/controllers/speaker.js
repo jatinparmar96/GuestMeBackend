@@ -244,8 +244,12 @@ exports.getSpeaker = (req, res) => {
     .populate('reviews')
     .populate('reviewsQuantity')
 
+    // .select(
+    //   'firstName lastName location tagLine profilePicture skills videos certifications about availability conditions'
+    // )
     .exec()
     .then((result) => {
+      return res.status(200).json(result);
     })
     .catch((error) => res.status(500).json(error));
 };
