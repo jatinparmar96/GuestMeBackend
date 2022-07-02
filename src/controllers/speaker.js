@@ -1,12 +1,13 @@
 const Speaker = require('../models/speaker');
 const jwt = require('jsonwebtoken');
 const createError = require('http-errors');
-const { generateHash } = require('../utils/utils');
+const { generateHash, checkUrl } = require('../utils/utils');
 // Auth Error
 const AuthenticationError = require('../errors/AuthenticationError');
 const {
   regSchema,
   logSchema,
+  availabilitySchema,
 } = require('../middleware/validation_speakerSchema');
 const { s3, s3Bucket } = require('../utils/aws-service');
 
@@ -80,7 +81,6 @@ exports.login = async (req, res, next) => {
     const result = await logSchema.validateAsync(req.body);
     // const password = await generateHash(req.body.password ?? '');
     let speaker = await Speaker.findOne({ 'credentials.email': result.email });
-    console.log(result.email);
 
     if (!speaker) {
       throw createError.NotFound('User not registered');
@@ -195,7 +195,8 @@ exports.updateProfile = async (req, res, next) => {
   const user = await Speaker.findById(req.authToken.id);
   const userData = req.body;
 
-  if (userData.profilePicture) {
+  isUrl = checkUrl(userData.profilePicture);
+  if (userData.profilePicture && !isUrl) {
     let fileName = new Date().getTime().toString();
 
     // If file already exists, replace data only
@@ -234,6 +235,12 @@ exports.updateProfile = async (req, res, next) => {
 
   //await user.save();
   res.json(user);
+};
+
+  }
+  const id = req.params.id;
+  const speaker = await Speaker.findById(id).select('availability');
+  res.send(speaker.availability);
 };
 
 /**

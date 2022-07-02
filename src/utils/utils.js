@@ -12,3 +12,15 @@ exports.generateHash = async (literal) => {
   const hash = await bcrypt.hash(literal, salt);
   return hash;
 };
+/**
+ * Check if a given string is a valid url or not
+ */
+exports.checkUrl = (strValue) => {
+  let isUrl = true;
+  try {
+    new URL(strValue);
+  } catch {
+    isUrl = false;
+  }
+  return isUrl;
+};
