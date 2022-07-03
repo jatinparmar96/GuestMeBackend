@@ -69,7 +69,7 @@ const organizationSchema = new Schema(
       },
     },
     toObject: {
-      virutals: true,
+      virtuals: true,
       transform: (doc, ret, options) => {
         delete ret?.credentials?.password;
         return ret;
