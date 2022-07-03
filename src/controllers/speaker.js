@@ -262,7 +262,6 @@ exports.getSpeaker = (req, res) => {
   Speaker.findOne({ _id: req.params.id })
     .populate('reviews')
     .populate('reviewsQuantity')
-    .populate('bookings')
     .exec()
     .then((result) => {
       return res.status(200).json(result);
