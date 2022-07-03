@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt');
+const Bookings = require('../models/bookings');
 
 const organizationSchema = new Schema(
   {
@@ -85,5 +86,11 @@ organizationSchema.methods.isValidPassword = async function (password) {
     throw error;
   }
 };
+
+organizationSchema.virtual('bookings', {
+  ref: 'Bookings',
+  localField: '_id',
+  foreignField: 'organization.id',
+});
 
 module.exports = mongoose.model('Organization', organizationSchema);

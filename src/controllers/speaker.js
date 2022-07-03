@@ -262,10 +262,7 @@ exports.getSpeaker = (req, res) => {
   Speaker.findOne({ _id: req.params.id })
     .populate('reviews')
     .populate('reviewsQuantity')
-
-    // .select(
-    //   'firstName lastName location tagLine profilePicture skills videos certifications about availability conditions'
-    // )
+    .populate('bookings')
     .exec()
     .then((result) => {
       return res.status(200).json(result);
@@ -281,7 +278,21 @@ exports.getMaxPrice = async (req, res, next) => {
 };
 
 /**
- * Get Random Speakers
+ *! GET SPEAKER BOOKINGS
+ *
+ *  */
+exports.getSpeakerBookings = (req, res) => {
+  Speaker.findOne({ _id: req.params.id })
+    .populate('bookings')
+    .select('bookings')
+    .exec()
+    .then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((error) => res.status(500).json(error));
+};
+
+/* * Get Random Speakers
  * For now Send a sample of 6 random speakers.
  *
  * @param  {} req
