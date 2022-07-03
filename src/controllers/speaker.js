@@ -97,7 +97,7 @@ exports.login = async (req, res, next) => {
        * For now only send token, until we find a better way to mutate user object to remove
        * password field
        */
-      res.status(200).send({ token });
+      res.status(200).send({ token, user: speaker });
     }
   } catch (error) {
     if (error.isJoi === true)
