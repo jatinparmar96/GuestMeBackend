@@ -11,7 +11,6 @@ const reviewsSchema = new Schema({
   },
   organization: mongoose.Schema({
     id: {
-      // type: Number,
       type: Schema.Types.ObjectId,
       ref: 'Organization',
       required: true,

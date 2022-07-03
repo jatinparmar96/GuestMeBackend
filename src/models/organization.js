@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt');
+const Bookings = require('../models/bookings');
 
 const organizationSchema = new Schema(
   {
@@ -60,6 +61,7 @@ const organizationSchema = new Schema(
     },
   },
   {
+<<<<<<< HEAD
     toJSON: {
       virtuals: true,
       transform: function (doc, ret, options) {
@@ -74,6 +76,10 @@ const organizationSchema = new Schema(
         return ret;
       },
     },
+=======
+    toJSON: { virtuals: true },
+    toObject: { virutals: true },
+>>>>>>> 53d4aff (Add virtual methods to get bookings (organizations & speakers))
   }
 );
 organizationSchema.set('timestamps', true);
@@ -85,5 +91,11 @@ organizationSchema.methods.isValidPassword = async function (password) {
     throw error;
   }
 };
+
+organizationSchema.virtual('bookings', {
+  ref: 'Bookings',
+  localField: '_id',
+  foreignField: 'organization.id',
+});
 
 module.exports = mongoose.model('Organization', organizationSchema);
