@@ -8,7 +8,11 @@ const speakerRoutes = require('./src/routes/speaker');
 const organizationRoutes = require('./src/routes/organization');
 
 const reviewRoutes = require('./src/routes/review');
+<<<<<<< HEAD
 const { seedSpeaker, seedReviews, remove } = require('./seed/seed');
+=======
+const bookingRoutes = require('./src/routes/booking');
+>>>>>>> 3a6f030 (Add bookings endpoint - post booking & get bookings)
 
 const app = express();
 
@@ -30,6 +34,7 @@ app.use(express.urlencoded({ extended: true })); //parse form data
 app.use('/speakers', speakerRoutes);
 app.use('/organizations', organizationRoutes);
 app.use('/reviews', reviewRoutes);
+app.use('/bookings', bookingRoutes);
 
 app.get('/', (req, res) => {
   res.send('Hello GuesteaBackend');
