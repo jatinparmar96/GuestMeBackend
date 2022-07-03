@@ -8,6 +8,7 @@ const speakerRoutes = require('./src/routes/speaker');
 const organizationRoutes = require('./src/routes/organization');
 
 const reviewRoutes = require('./src/routes/review');
+const bookingRoutes = require('./src/routes/booking');
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use(express.urlencoded({ extended: true })); //parse form data
 app.use('/speakers', speakerRoutes);
 app.use('/organizations', organizationRoutes);
 app.use('/reviews', reviewRoutes);
+app.use('/bookings', bookingRoutes);
 
 app.get('/', (req, res) => {
   res.send('Hello GuesteaBackend');
