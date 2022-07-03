@@ -23,4 +23,8 @@ const logSchema = Joi.object({
   password: Joi.string().min(8).required(),
 });
 
-module.exports = { regSchema, logSchema };
+const availabilitySchema = Joi.object({
+  id: Joi.string().required(),
+});
+
+module.exports = { regSchema, logSchema, availabilitySchema };
