@@ -8,6 +8,7 @@ const {
   getSpeakers,
   getSpeaker,
   getMaxPrice,
+  getSpeakerBookings,
 } = require('../controllers/speaker');
 const {
   SpeakerAuthMiddleware,
@@ -30,5 +31,8 @@ router.get('/', getSpeakers);
 
 // Get speaker by id
 router.get('/:id', getSpeaker);
+
+// Get speaker bookings
+router.get('/bookings/:id', getSpeakerBookings);
 
 module.exports = router;

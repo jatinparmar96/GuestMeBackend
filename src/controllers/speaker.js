@@ -243,7 +243,7 @@ exports.getSpeaker = (req, res) => {
   Speaker.findOne({ _id: req.params.id })
     .populate('reviews')
     .populate('reviewsQuantity')
-
+    .populate('bookings')
     .select(
       'firstName lastName location tagLine profilePicture skills videos certifications about availability conditions'
     )
@@ -259,4 +259,19 @@ exports.getMaxPrice = async (req, res, next) => {
     .sort('-conditions.price')
     .select('conditions.price');
   res.status(200).json({ maxPrice: result?.conditions?.price || 0 });
+};
+
+/**
+ *! GET SPEAKER BOOKINGS
+ *
+ *  */
+exports.getSpeakerBookings = (req, res) => {
+  Speaker.findOne({ _id: req.params.id })
+    .populate('bookings')
+    .select('bookings')
+    .exec()
+    .then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((error) => res.status(500).json(error));
 };

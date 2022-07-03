@@ -4,10 +4,7 @@ const router = express.Router({ mergeParams: true });
 const {
   register,
   login,
-  updateProfile,
-  getSpeakers,
-  getSpeaker,
-  getMaxPrice,
+  getOrganizationBookings,
 } = require('../controllers/organization');
 const {
   OrganizationAuthMiddleware,
@@ -16,6 +13,9 @@ const {
 router.post('/register', register);
 
 router.post('/login', login);
+
+// Get organization bookings
+router.get('/bookings/:id', getOrganizationBookings);
 
 // Get organization by id
 // router.get('/:id', getOrganization);

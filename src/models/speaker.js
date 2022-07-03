@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt');
 const Reviews = require('../models/reviews');
+const Bookings = require('../models/bookings');
 
 const speakerSchema = new Schema(
   {
@@ -106,5 +107,10 @@ speakerSchema.virtual('fullName').get(function () {
   return this.firstName + ' ' + this.lastName;
 });
 
+speakerSchema.virtual('bookings', {
+  ref: 'Bookings',
+  localField: '_id',
+  foreignField: 'speaker.id',
+});
 const Speaker = mongoose.model('Speaker', speakerSchema);
 module.exports = Speaker;

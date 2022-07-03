@@ -113,3 +113,18 @@ exports.login = async (req, res, next) => {
  * @typedef {import('./organization.controller').OrganizationRegisterRequestBody} OrganizationRegisterRequestBody
  * @typedef {import('./organization.controller').OrganizationLoginRequestBody} OrganizationLoginRequestBody
  */
+
+/**
+ *! GET ORGANIZATION BOOKINGS
+ *
+ *  */
+exports.getOrganizationBookings = (req, res) => {
+  Organization.findOne({ _id: req.params.id })
+    .populate('bookings')
+    .select('bookings')
+    .exec()
+    .then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((error) => res.status(500).json(error));
+};

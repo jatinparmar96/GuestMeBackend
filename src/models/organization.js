@@ -1,63 +1,70 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt');
+const Bookings = require('../models/bookings');
 
-const organizationSchema = new Schema({
-  organizationName: {
-    type: String,
-  },
-  about: {
-    type: String,
-  },
-  profilePicture: {
-    type: String,
-  },
-  address: {
-    type: String,
-  },
-  postalCode: {
-    type: String,
-  },
-  phone: {
-    type: String,
-  },
-  contact: mongoose.Schema({
+const organizationSchema = new Schema(
+  {
+    organizationName: {
+      type: String,
+    },
+    about: {
+      type: String,
+    },
+    profilePicture: {
+      type: String,
+    },
+    address: {
+      type: String,
+    },
+    postalCode: {
+      type: String,
+    },
     phone: {
       type: String,
     },
-    email: {
-      type: String,
+    contact: mongoose.Schema({
+      phone: {
+        type: String,
+      },
+      email: {
+        type: String,
+      },
+    }),
+    credentials: mongoose.Schema({
+      email: {
+        type: String,
+        required: true,
+      },
+      password: {
+        type: String,
+        required: true,
+      },
+    }),
+    savedSpeakers: mongoose.Schema({
+      speakerID: {
+        type: Schema.Types.ObjectId,
+        ref: 'Speaker',
+      },
+      speakerName: {
+        type: String,
+      },
+      createdAt: {
+        type: Date,
+      },
+      updatedAt: {
+        type: Date,
+      },
+    }),
+    notificationCount: {
+      type: Number,
     },
-  }),
-  credentials: mongoose.Schema({
-    email: {
-      type: String,
-      required: true,
-    },
-    password: {
-      type: String,
-      required: true,
-    },
-  }),
-  savedSpeakers: mongoose.Schema({
-    speakerID: {
-      type: Schema.Types.ObjectId,
-      ref: 'Speaker',
-    },
-    speakerName: {
-      type: String,
-    },
-    createdAt: {
-      type: Date,
-    },
-    updatedAt: {
-      type: Date,
-    },
-  }),
-  notificationCount: {
-    type: Number,
   },
-});
+  {
+    toJSON: { virtuals: true },
+    toObject: { virutals: true },
+  }
+);
 organizationSchema.set('timestamps', true);
 
 organizationSchema.methods.isValidPassword = async function (password) {
@@ -67,5 +74,11 @@ organizationSchema.methods.isValidPassword = async function (password) {
     throw error;
   }
 };
+
+organizationSchema.virtual('bookings', {
+  ref: 'Bookings',
+  localField: '_id',
+  foreignField: 'organization.id',
+});
 
 module.exports = mongoose.model('Organization', organizationSchema);

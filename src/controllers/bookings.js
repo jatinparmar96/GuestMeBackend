@@ -39,7 +39,17 @@ const getBookings = (req, res) => {
     .catch((error) => res.status(500).send(error));
 };
 
+const getBookingsBySpeakerId = (req, res) => {
+  Booking.find({ speaker: { id: req.params.id } })
+    .exec()
+    .then((results) => {
+      res.status(200).json(results);
+    })
+    .catch((error) => res.status(500).send(error));
+};
+
 module.exports = {
   getBookings,
   postBooking,
+  getBookingsBySpeakerId,
 };
