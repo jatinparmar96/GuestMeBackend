@@ -8,11 +8,8 @@ const speakerRoutes = require('./src/routes/speaker');
 const organizationRoutes = require('./src/routes/organization');
 
 const reviewRoutes = require('./src/routes/review');
-<<<<<<< HEAD
 const { seedSpeaker, seedReviews, remove } = require('./seed/seed');
-=======
 const bookingRoutes = require('./src/routes/booking');
->>>>>>> 3a6f030 (Add bookings endpoint - post booking & get bookings)
 
 const app = express();
 

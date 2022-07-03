@@ -8,12 +8,9 @@ const {
   getSpeakers,
   getSpeaker,
   getMaxPrice,
-<<<<<<< HEAD
   getRandomSpeakers,
   getSpeakerAvailability,
-=======
   getSpeakerBookings,
->>>>>>> 53d4aff (Add virtual methods to get bookings (organizations & speakers))
 } = require('../controllers/speaker');
 const {
   SpeakerAuthMiddleware,

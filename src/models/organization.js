@@ -61,7 +61,6 @@ const organizationSchema = new Schema(
     },
   },
   {
-<<<<<<< HEAD
     toJSON: {
       virtuals: true,
       transform: function (doc, ret, options) {
@@ -76,10 +75,6 @@ const organizationSchema = new Schema(
         return ret;
       },
     },
-=======
-    toJSON: { virtuals: true },
-    toObject: { virutals: true },
->>>>>>> 53d4aff (Add virtual methods to get bookings (organizations & speakers))
   }
 );
 organizationSchema.set('timestamps', true);
