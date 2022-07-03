@@ -75,8 +75,20 @@ const speakerSchema = new Schema(
     }),
   },
   {
-    toJSON: { virtuals: true },
-    toObject: { virutals: true },
+    toJSON: {
+      virtuals: true,
+      transform: function (doc, ret, options) {
+        delete ret?.credentials?.password;
+        return ret;
+      },
+    },
+    toObject: {
+      virutals: true,
+      transform: (doc, ret, options) => {
+        delete ret?.credentials?.password;
+        return ret;
+      },
+    },
   }
 );
 speakerSchema.set('timestamps', true);
