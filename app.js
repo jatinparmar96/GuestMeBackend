@@ -8,6 +8,7 @@ const speakerRoutes = require('./src/routes/speaker');
 const organizationRoutes = require('./src/routes/organization');
 
 const reviewRoutes = require('./src/routes/review');
+const { seedSpeaker, seedReviews, remove } = require('./seed/seed');
 
 const app = express();
 
@@ -42,6 +43,13 @@ app.use((error, req, res, next) => {
 });
 
 const MyModel = mongoose.model('Test', new Schema({ name: String }));
+
+app.get('/seed', async (req, res) => {
+  await remove();
+  await seedSpeaker();
+  await seedReviews();
+  res.json();
+});
 app.get('/dbtest', async (req, res) => {
   const model = new MyModel({});
   model.name = new Date().toISOString();

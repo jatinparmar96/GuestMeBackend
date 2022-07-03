@@ -1,12 +1,13 @@
 const Speaker = require('../models/speaker');
 const jwt = require('jsonwebtoken');
 const createError = require('http-errors');
-const { generateHash } = require('../utils/utils');
+const { generateHash, checkUrl } = require('../utils/utils');
 // Auth Error
 const AuthenticationError = require('../errors/AuthenticationError');
 const {
   regSchema,
   logSchema,
+  availabilitySchema,
 } = require('../middleware/validation_speakerSchema');
 const { s3, s3Bucket } = require('../utils/aws-service');
 
@@ -194,7 +195,8 @@ exports.updateProfile = async (req, res, next) => {
   const user = await Speaker.findById(req.authToken.id);
   const userData = req.body;
 
-  if (userData.profilePicture) {
+  isUrl = checkUrl(userData.profilePicture);
+  if (userData.profilePicture && !isUrl) {
     let fileName = new Date().getTime().toString();
 
     // If file already exists, replace data only
@@ -231,8 +233,25 @@ exports.updateProfile = async (req, res, next) => {
     user[key] = userData[key];
   });
 
-  //await user.save();
+  await user.save();
   res.json(user);
+};
+
+/**
+ * Get Speaker Availability
+ * @param {*} req
+ * @param {*} res
+ *  URL -> /speakers/get-availability/:id
+ */
+exports.getSpeakerAvailability = async (req, res) => {
+  const result = await availabilitySchema.validate(req.params);
+  if (result.error) {
+    return res.send(result.error);
+  }
+  const speaker = await Speaker.findById(result.value.id).select(
+    'availability'
+  );
+  res.send(speaker?.availability || []);
 };
 
 /**
