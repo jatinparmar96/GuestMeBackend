@@ -307,18 +307,3 @@ exports.getRandomSpeakers = async (req, res) => {
   ]);
   return res.json(speakers);
 };
-
-/**
- *! GET SPEAKER BOOKINGS
- *
- *  */
-exports.getSpeakerBookings = (req, res) => {
-  Speaker.findOne({ _id: req.params.id })
-    .populate('bookings')
-    .select('bookings')
-    .exec()
-    .then((result) => {
-      res.status(200).json(result);
-    })
-    .catch((error) => res.status(500).json(error));
-};
