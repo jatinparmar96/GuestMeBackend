@@ -1,12 +1,13 @@
 const Speaker = require('../models/speaker');
 const jwt = require('jsonwebtoken');
 const createError = require('http-errors');
-const { generateHash } = require('../utils/utils');
+const { generateHash, checkUrl } = require('../utils/utils');
 // Auth Error
 const AuthenticationError = require('../errors/AuthenticationError');
 const {
   regSchema,
   logSchema,
+  availabilitySchema,
 } = require('../middleware/validation_speakerSchema');
 const { s3, s3Bucket } = require('../utils/aws-service');
 
@@ -97,7 +98,7 @@ exports.login = async (req, res, next) => {
        * For now only send token, until we find a better way to mutate user object to remove
        * password field
        */
-      res.status(200).send({ token });
+      res.status(200).send({ token, user: speaker });
     }
   } catch (error) {
     if (error.isJoi === true)
@@ -194,7 +195,8 @@ exports.updateProfile = async (req, res, next) => {
   const user = await Speaker.findById(req.authToken.id);
   const userData = req.body;
 
-  if (userData.profilePicture) {
+  isUrl = checkUrl(userData.profilePicture);
+  if (userData.profilePicture && !isUrl) {
     let fileName = new Date().getTime().toString();
 
     // If file already exists, replace data only
@@ -231,8 +233,25 @@ exports.updateProfile = async (req, res, next) => {
     user[key] = userData[key];
   });
 
-  //await user.save();
+  await user.save();
   res.json(user);
+};
+
+/**
+ * Get Speaker Availability
+ * @param {*} req
+ * @param {*} res
+ *  URL -> /speakers/get-availability/:id
+ */
+exports.getSpeakerAvailability = async (req, res) => {
+  const result = await availabilitySchema.validate(req.params);
+  if (result.error) {
+    return res.send(result.error);
+  }
+  const speaker = await Speaker.findById(result.value.id).select(
+    'availability'
+  );
+  res.send(speaker?.availability || []);
 };
 
 /**
@@ -244,12 +263,9 @@ exports.getSpeaker = (req, res) => {
     .populate('reviews')
     .populate('reviewsQuantity')
     .populate('bookings')
-    .select(
-      'firstName lastName location tagLine profilePicture skills videos certifications about availability conditions'
-    )
     .exec()
     .then((result) => {
-      res.status(200).json(result);
+      return res.status(200).json(result);
     })
     .catch((error) => res.status(500).json(error));
 };
@@ -274,4 +290,20 @@ exports.getSpeakerBookings = (req, res) => {
       res.status(200).json(result);
     })
     .catch((error) => res.status(500).json(error));
+};
+
+/* * Get Random Speakers
+ * For now Send a sample of 6 random speakers.
+ *
+ * @param  {} req
+ * @param  {} res
+ */
+exports.getRandomSpeakers = async (req, res) => {
+  // !To JSON object doesn't remove from aggregate queries
+  // So unset the fields in the aggregate pipeline itself.
+  const speakers = await Speaker.aggregate([
+    { $sample: { size: 6 } },
+    { $unset: ['credentials.password'] },
+  ]);
+  return res.json(speakers);
 };
