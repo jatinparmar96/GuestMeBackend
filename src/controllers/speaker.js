@@ -280,15 +280,24 @@ exports.getMaxPrice = async (req, res, next) => {
  *! GET SPEAKER BOOKINGS
  *
  *  */
-exports.getSpeakerBookings = (req, res) => {
-  Speaker.findOne({ _id: req.params.id })
-    .populate('bookings')
-    .select('bookings')
-    .exec()
-    .then((result) => {
-      res.status(200).json(result);
-    })
-    .catch((error) => res.status(500).json(error));
+exports.getSpeakerBookings = async (req, res) => {
+  try {
+    const { bookings } = await Speaker.findOne({ _id: req.params.id })
+      .populate('bookings')
+      .select('bookings');
+    const sortedBookings = bookings.reduce((acc, booking) => {
+      if (acc[booking.status]) {
+        acc[booking.status].push(booking);
+      } else {
+        acc[booking.status] = [booking];
+      }
+      return acc;
+    }, {});
+
+    res.status(200).json(sortedBookings);
+  } catch (e) {
+    return res.status(500).json(e);
+  }
 };
 
 /* * Get Random Speakers
