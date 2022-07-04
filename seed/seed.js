@@ -7,7 +7,10 @@ const { generateHash } = require('../src/utils/utils');
 exports.remove = async function remove() {
   await Speaker.deleteMany({}).exec();
   await Reviews.deleteMany({}).exec();
+  await Bookings.deleteMany({}).exec();
+  await Organization.deleteMany({}).exec();
 };
+
 exports.seedSpeaker = async function seedSpeaker() {
   const speakers = [];
   for (let i = 0; i < 10; i++) {
@@ -62,14 +65,19 @@ exports.seedSpeaker = async function seedSpeaker() {
 
 exports.seedReviews = async function seedReviews() {
   const speakers = await Speaker.find();
+  const organizations = await Organization.find();
+
   const reviews = [];
   for (let i = 0; i < 20; i++) {
     const review = {};
     review.speakerID =
       speakers[Math.floor(Math.random() * 1000) % speakers.length]._id;
     review.organization = {};
-    review.organization.id = faker.database.mongodbObjectId();
-    review.organization.name = faker.company.companyName();
+
+    const organizationId =
+      Math.floor(Math.random() * 1000) % organizations.length;
+    review.organization.id = organizations[organizationId]._id;
+    review.organization.name = organizations[organizationId].organizationName;
     review.rating = faker.finance.amount(1, 5);
     review.comment = faker.lorem.sentence();
     reviews.push(review);
@@ -84,16 +92,16 @@ exports.seedBookings = async function seedBookings() {
   for (let i = 0; i < 20; i++) {
     const booking = {};
     booking.speaker = {};
-    booking.speaker.id =
-      speakers[Math.floor(Math.random() * 1000) % speakers.length]._id;
-    const speaker = await Speaker.findById(booking.speaker.id);
+    const speakerId = Math.floor(Math.random() * 1000) % speakers.length;
+    booking.speaker.id = speakers[speakerId]._id;
+    const speaker = speakers[speakerId];
     booking.speaker.name = speaker.firstName;
     booking.organization = {};
-    booking.organization.id =
-      organizations[
-        Math.floor(Math.random() * 1000) % organizations.length
-      ]._id;
-    const organization = await Organization.findById(booking.organization.id);
+
+    const organizationId =
+      Math.floor(Math.random() * 1000) % organizations.length;
+    booking.organization.id = organizations[organizationId]._id;
+    const organization = organizations[organizationId];
     booking.organization.name = organization.organizationName;
     booking.bookingDateTime = {};
     booking.bookingDateTime.startDateTime = faker.date.future();
