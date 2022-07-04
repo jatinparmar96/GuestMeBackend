@@ -6,32 +6,26 @@ const bookingsSchema = new Schema({
     id: {
       type: Schema.Types.ObjectId,
       ref: 'Speaker',
-      required: true,
     },
     name: {
       type: String,
-      required: true,
     },
   }),
   organization: mongoose.Schema({
     id: {
       type: Schema.Types.ObjectId,
       ref: 'Organization',
-      required: true,
     },
     name: {
       type: String,
-      required: true,
     },
   }),
   bookingDateTime: mongoose.Schema({
     startDateTime: {
       type: Date,
-      required: true,
     },
     endDateTime: {
       type: String,
-      required: true,
     },
   }),
   location: {
