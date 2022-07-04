@@ -21,6 +21,7 @@ exports.checkUrl = (strValue) => {
     new URL(strValue);
   } catch {
     isUrl = false;
+    return isUrl;
   }
-  return isUrl;
+  return isUrl.protocol === 'http:' || isUrl.protocol === 'https:';
 };
