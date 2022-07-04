@@ -1,11 +1,16 @@
 const { faker } = require('@faker-js/faker');
 const Speaker = require('../src/models/speaker');
 const Reviews = require('../src/models/reviews');
+const Bookings = require('../src/models/bookings');
+const Organization = require('../src/models/organization');
 const { generateHash } = require('../src/utils/utils');
 exports.remove = async function remove() {
   await Speaker.deleteMany({}).exec();
   await Reviews.deleteMany({}).exec();
+  await Bookings.deleteMany({}).exec();
+  await Organization.deleteMany({}).exec();
 };
+
 exports.seedSpeaker = async function seedSpeaker() {
   const speakers = [];
   for (let i = 0; i < 10; i++) {
@@ -60,17 +65,85 @@ exports.seedSpeaker = async function seedSpeaker() {
 
 exports.seedReviews = async function seedReviews() {
   const speakers = await Speaker.find();
+  const organizations = await Organization.find();
+
   const reviews = [];
   for (let i = 0; i < 20; i++) {
     const review = {};
     review.speakerID =
       speakers[Math.floor(Math.random() * 1000) % speakers.length]._id;
     review.organization = {};
-    review.organization.id = faker.database.mongodbObjectId();
-    review.organization.name = faker.company.companyName();
+
+    const organizationId =
+      Math.floor(Math.random() * 1000) % organizations.length;
+    review.organization.id = organizations[organizationId]._id;
+    review.organization.name = organizations[organizationId].organizationName;
     review.rating = faker.finance.amount(1, 5);
     review.comment = faker.lorem.sentence();
     reviews.push(review);
   }
   await Reviews.insertMany(reviews);
+};
+
+exports.seedBookings = async function seedBookings() {
+  const speakers = await Speaker.find();
+  const organizations = await Organization.find();
+  const bookings = [];
+  for (let i = 0; i < 20; i++) {
+    const booking = {};
+    booking.speaker = {};
+    const speakerId = Math.floor(Math.random() * 1000) % speakers.length;
+    booking.speaker.id = speakers[speakerId]._id;
+    const speaker = speakers[speakerId];
+    booking.speaker.name = speaker.firstName;
+    booking.organization = {};
+
+    const organizationId =
+      Math.floor(Math.random() * 1000) % organizations.length;
+    booking.organization.id = organizations[organizationId]._id;
+    const organization = organizations[organizationId];
+    booking.organization.name = organization.organizationName;
+    booking.bookingDateTime = {};
+    booking.bookingDateTime.startDateTime = faker.date.future();
+    booking.bookingDateTime.endDateTime = faker.date.future();
+    booking.location = faker.address.cityName();
+    booking.topic = faker.helpers.arrayElement([
+      'Environmental',
+      'Social',
+      'Culture',
+    ]);
+    booking.message = faker.lorem.sentence();
+    booking.status = 'pending';
+    booking.personInCharge = faker.name.findName();
+    booking.deliveryMethod = faker.helpers.arrayElement([
+      'isInPerson',
+      'isOnline',
+    ]);
+    bookings.push(booking);
+  }
+  await Bookings.insertMany(bookings);
+};
+
+exports.seedOrganization = async function seedOrganization() {
+  const organizations = [];
+  for (let i = 0; i < 10; i++) {
+    const organization = {};
+    organization.organizationName = faker.company.companyName();
+    organization.about = faker.lorem.sentence();
+    organization.profilePicture = `https://picsum.photos/seed/${
+      i + 1
+    }/400/400/`;
+    organization.address = faker.address.streetAddress();
+    organization.postalCode = faker.address.zipCode();
+    organization.phone = faker.phone.number();
+    organization.contact = {};
+    const email = faker.internet.email().toLowerCase();
+    organization.contact.email = email;
+    organization.contact.phone = faker.phone.number();
+    organization.credentials = {};
+    organization.credentials.email = email;
+    organization.credentials.password = await generateHash('topsecret');
+    organizations.push(organization);
+  }
+  await Organization.collection.insertMany(organizations);
 };
