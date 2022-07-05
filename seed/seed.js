@@ -13,7 +13,7 @@ exports.remove = async function remove() {
 
 exports.seedSpeaker = async function seedSpeaker() {
   const speakers = [];
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 20; i++) {
     const speaker = {};
     speaker.firstName = faker.name.firstName();
     speaker.lastName = faker.name.lastName();
@@ -23,7 +23,11 @@ exports.seedSpeaker = async function seedSpeaker() {
       'Graphic Design',
       'Music',
     ]);
-    speaker.videos = faker.internet.url();
+    speaker.videos = faker.helpers.arrayElement([
+      'https://www.youtube.com/watch?v=8hly31xKli0',
+      'https://www.youtube.com/watch?v=fAAZixBzIAI',
+      'https://www.youtube.com/watch?v=xa-4IAR_9Yw',
+    ]);
     speaker.certifications = faker.helpers.arrayElement([
       'Diploma in Electronics',
       'Diploma in Computer Science',
@@ -31,13 +35,13 @@ exports.seedSpeaker = async function seedSpeaker() {
     ]);
     speaker.profilePicture = `https://picsum.photos/seed/${i + 1}/400/400/`;
     speaker.about = faker.lorem.sentence();
-    speaker.availability = faker.helpers.arrayElement([
-      faker.date.soon(),
-      faker.date.soon(),
-      faker.date.soon(),
-      faker.date.soon(),
-      faker.date.soon(),
-    ]);
+    speaker.availability = [
+      faker.date.soon(1),
+      faker.date.soon(3),
+      faker.date.soon(7),
+      faker.date.soon(9),
+      faker.date.soon(11),
+    ];
     speaker.conditions = {};
     speaker.conditions.isInPerson = faker.helpers.arrayElement([true, false]);
     speaker.conditions.isOnline = faker.helpers.arrayElement([true, false]);
@@ -46,11 +50,13 @@ exports.seedSpeaker = async function seedSpeaker() {
       'Law',
       'Finance',
       'Science',
+      'Arts',
     ]);
     speaker.conditions.language = faker.helpers.arrayElement([
       'English',
       'French',
       'Hindi',
+      'Spanish',
     ]);
     const email = faker.internet.email().toLowerCase();
     speaker.credentials = {};
