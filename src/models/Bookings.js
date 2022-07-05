@@ -22,10 +22,13 @@ const bookingsSchema = new Schema({
   }),
   bookingDateTime: mongoose.Schema({
     startDateTime: {
-      type: Date,
+      type: String,
     },
     endDateTime: {
       type: String,
+    },
+    date: {
+      type: Date,
     },
   }),
   location: {

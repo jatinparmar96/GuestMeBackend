@@ -32,9 +32,11 @@ exports.seedSpeaker = async function seedSpeaker() {
     speaker.profilePicture = `https://picsum.photos/seed/${i + 1}/400/400/`;
     speaker.about = faker.lorem.sentence();
     speaker.availability = faker.helpers.arrayElement([
-      faker.date.future(),
-      faker.date.future(),
-      faker.date.future(),
+      faker.date.soon(),
+      faker.date.soon(),
+      faker.date.soon(),
+      faker.date.soon(),
+      faker.date.soon(),
     ]);
     speaker.conditions = {};
     speaker.conditions.isInPerson = faker.helpers.arrayElement([true, false]);
@@ -104,8 +106,19 @@ exports.seedBookings = async function seedBookings() {
     const organization = organizations[organizationId];
     booking.organization.name = organization.organizationName;
     booking.bookingDateTime = {};
-    booking.bookingDateTime.startDateTime = faker.date.future();
-    booking.bookingDateTime.endDateTime = faker.date.future();
+    booking.bookingDateTime.startDateTime = faker.helpers.arrayElement([
+      '9:30 am',
+      '10:30 am',
+      '11:30 am',
+      '12:30 pm',
+    ]);
+    booking.bookingDateTime.endDateTime = faker.helpers.arrayElement([
+      '01:30 pm',
+      '02:30 pm',
+      '03:30 pm',
+      '04:30 pm',
+    ]);
+    booking.bookingDateTime.date = faker.date.soon();
     booking.location = faker.address.cityName();
     booking.topic = faker.helpers.arrayElement([
       'Environmental',
