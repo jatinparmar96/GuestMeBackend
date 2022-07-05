@@ -39,7 +39,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoicmFuZG9td
 GET http://localhost:8080/speakers/62c3482ccb93116bd394f1eb
 
 ###
-GET http://localhost:8080/speakers/bookings/62c3482ccb93116bd394f1eb
+GET http://localhost:8080/speakers/bookings/62c3482ccb93116bd394f1e9
 
 ###
 GET http://localhost:8080/organizations/bookings/62c3482ccb93116bd394f1eb

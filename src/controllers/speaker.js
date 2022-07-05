@@ -115,7 +115,7 @@ exports.login = async (req, res, next) => {
  *  */
 exports.getSpeakers = async (req, res, next) => {
   try {
-    const { isInPerson, isOnline, priceMin, priceMax } = req.query;
+    const { isInPerson, isOnline, priceMin, priceMax, page = 1 } = req.query;
     const areas = req.query?.areas?.split('_');
     const language = req.query?.language?.split('_');
     const locations = req.query?.location?.split('_');
@@ -161,7 +161,7 @@ exports.getSpeakers = async (req, res, next) => {
     if (andQuery.length > 0) {
       query = { ...query, $and: andQuery };
     }
-
+    console.log(query);
     const speakers = await Speaker.find(query)
       .populate('reviews')
       .populate('reviewsQuantity')
@@ -169,6 +169,7 @@ exports.getSpeakers = async (req, res, next) => {
         'fullName profilePicture location conditions firstName lastName tagline'
       )
       .limit(10)
+      .skip((page - 1) * 10)
       .exec()
       .catch((error) => res.status(500).json(error));
 
