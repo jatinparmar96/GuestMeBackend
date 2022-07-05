@@ -1,26 +1,9 @@
 const Booking = require('../models/bookings');
 
 const postBooking = (req, res) => {
-  let booking = new Booking({
-    speaker: {
-      id: req.body.id,
-      name: req.body.name,
-    },
-    organization: {
-      id: req.body.id,
-      name: req.body.name,
-    },
-    bookingDateTime: {
-      startDateTime: req.body.startDateTime,
-      endDateTime: req.body.endDateTime,
-    },
-    location: req.body.location,
-    topic: req.body.topic,
-    message: req.body.message,
-    status: 'pending',
-    personInCharge: req.body.personInCharge,
-    deliveryMethod: req.body.deliveryMethod,
-  });
+  console.log(req.body);
+  let booking = new Booking(req.body);
+  booking.status = 'pending';
 
   booking
     .save()

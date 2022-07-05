@@ -197,6 +197,7 @@ exports.updateProfile = async (req, res, next) => {
   const userData = req.body;
 
   isUrl = checkUrl(userData.profilePicture);
+
   if (userData.profilePicture && !isUrl) {
     let fileName = new Date().getTime().toString();
 

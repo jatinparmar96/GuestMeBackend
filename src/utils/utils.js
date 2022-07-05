@@ -16,12 +16,11 @@ exports.generateHash = async (literal) => {
  * Check if a given string is a valid url or not
  */
 exports.checkUrl = (strValue) => {
-  let isUrl = true;
+  let isUrl;
   try {
-    new URL(strValue);
+    isUrl = new URL(strValue);
   } catch {
-    isUrl = false;
-    return isUrl;
+    return false;
   }
   return isUrl.protocol === 'http:' || isUrl.protocol === 'https:';
 };
