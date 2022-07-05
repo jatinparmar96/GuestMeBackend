@@ -228,12 +228,13 @@ exports.updateProfile = async (req, res, next) => {
   }
 
   // Don't allow to update password through here.
-  if (userData.password) {
-    delete userData.password;
+  if (userData.credentials) {
+    delete userData.credentials;
   }
   Object.keys(userData).forEach((key) => {
     user[key] = userData[key];
   });
+  console.log(user);
 
   await user.save();
   res.json(user);

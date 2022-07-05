@@ -85,10 +85,6 @@ const speakerSchema = new Schema(
     },
     toObject: {
       virtuals: true,
-      transform: (doc, ret, options) => {
-        delete ret?.credentials?.password;
-        return ret;
-      },
     },
   }
 );
