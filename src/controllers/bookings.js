@@ -31,8 +31,22 @@ const getBookingsBySpeakerId = (req, res) => {
     .catch((error) => res.status(500).send(error));
 };
 
+/**
+ * @param  {} req
+ * @param  {} res
+ */
+const setBookingAccepted = (req, res) => {
+  Booking.findOneAndUpdate({ _id: req.params.id }, { status: 'accepted' })
+    .exec()
+    .then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((error) => res.status(500).send(error));
+};
+
 module.exports = {
   getBookings,
   postBooking,
   getBookingsBySpeakerId,
+  setBookingAccepted,
 };
