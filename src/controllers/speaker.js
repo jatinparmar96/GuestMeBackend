@@ -36,8 +36,8 @@ exports.register = async (req, res, next) => {
     }
 
     const speaker = new Speaker({
-      userName: result.userName,
-      userLastname: result.userLastname,
+      firstName: result.userName,
+      lastName: result.userLastname,
       credentials: {
         email: result.email,
         password: await generateHash(result.password),
