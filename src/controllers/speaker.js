@@ -321,7 +321,7 @@ exports.getRandomSpeakers = async (req, res) => {
 
   const speakers = await Speaker.find({
     _id: speakerIds.map((item) => item._id),
-  });
+  }).populate('reviewsQuantity');
 
   return res.json(speakers);
 };
