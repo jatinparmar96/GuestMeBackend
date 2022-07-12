@@ -310,11 +310,18 @@ exports.getSpeakerBookings = async (req, res) => {
  * @param  {} res
  */
 exports.getRandomSpeakers = async (req, res) => {
-  // !To JSON object doesn't remove from aggregate queries
-  // So unset the fields in the aggregate pipeline itself.
-  const speakers = await Speaker.aggregate([
+  // Get random Ids and fetch speakers Model with those IDs
+  // aggregate doesn't return documents hence we need to query twice
+  // to get speakers with all their properties and relations.
+
+  const speakerIds = await Speaker.aggregate([
     { $sample: { size: 6 } },
     { $unset: ['credentials.password'] },
-  ]);
+  ]).project('_id');
+
+  const speakers = await Speaker.find({
+    _id: speakerIds.map((item) => item._id),
+  });
+
   return res.json(speakers);
 };
