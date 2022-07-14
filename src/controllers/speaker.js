@@ -47,18 +47,15 @@ exports.register = async (req, res, next) => {
       },
     });
 
-    await speaker.save();
+    const speakerData = await speaker.save();
 
     //? By default the token expires in 30 days
     const token = jwt.sign(
-      { name: speaker.name, id: speaker._id },
+      { name: speakerData.name, id: speakerData._id },
       process.env.JWT_SECRET_ACCESS,
       { expiresIn: '30 days' }
     );
-    res.status(200).send({
-      speaker,
-      token,
-    });
+    res.status(200).send({ token, user: speakerData });
   } catch (error) {
     if (error.isJoi === true)
       return next(createError.UnprocessableEntity(error.message));
