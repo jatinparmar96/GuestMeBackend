@@ -35,10 +35,10 @@
     "mongodb": "^4.6.0",
     "mongoose": "^6.3.5",
     "nodemon": "^2.0.16",
-    "sinon": "^14.0.0"
+    "sinon": "^14.0.0",
+    "@faker-js/faker": "^7.3.0"
   },
   "devDependencies": {
-    "@faker-js/faker": "^7.3.0",
     "eslint": "^8.17.0"
   }
 }

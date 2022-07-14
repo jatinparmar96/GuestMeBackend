@@ -36,8 +36,8 @@ exports.register = async (req, res, next) => {
     }
 
     const speaker = new Speaker({
-      userName: result.userName,
-      userLastname: result.userLastname,
+      firstName: result.userName,
+      lastName: result.userLastname,
       credentials: {
         email: result.email,
         password: await generateHash(result.password),
@@ -321,7 +321,7 @@ exports.getRandomSpeakers = async (req, res) => {
 
   const speakers = await Speaker.find({
     _id: speakerIds.map((item) => item._id),
-  });
+  }).populate('reviewsQuantity');
 
   return res.json(speakers);
 };
