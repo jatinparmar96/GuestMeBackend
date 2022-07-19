@@ -53,10 +53,10 @@ app.use((error, req, res, next) => {
 const MyModel = mongoose.model('Test', new Schema({ name: String }));
 
 app.get('/seed', async (req, res) => {
-  await remove();
-  await seedSpeaker();
-  await seedOrganization();
-  await seedReviews();
+  // await remove();
+  // await seedSpeaker();
+  // await seedOrganization();
+  // await seedReviews();
   await seedBookings();
   res.json();
 });

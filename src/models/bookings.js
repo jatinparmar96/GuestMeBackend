@@ -19,6 +19,12 @@ const bookingsSchema = new Schema({
     name: {
       type: String,
     },
+    organizationEmail: {
+      type: String,
+    },
+    organizationPhone: {
+      type: String,
+    },
   }),
   bookingDateTime: mongoose.Schema({
     startDateTime: {

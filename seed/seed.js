@@ -7,8 +7,8 @@ const { generateHash } = require('../src/utils/utils');
 exports.remove = async function remove() {
   await Speaker.deleteMany({}).exec();
   await Reviews.deleteMany({}).exec();
-  await Bookings.deleteMany({}).exec();
   await Organization.deleteMany({}).exec();
+  await Bookings.deleteMany({}).exec();
 };
 
 exports.seedSpeaker = async function seedSpeaker() {
@@ -111,6 +111,9 @@ exports.seedBookings = async function seedBookings() {
     booking.organization.id = organizations[organizationId]._id;
     const organization = organizations[organizationId];
     booking.organization.name = organization.organizationName;
+    booking.organization.organizationEmail = organization.contact.email;
+    booking.organization.organizationPhone = organization.contact.phone;
+    console.log(booking.organization);
     booking.bookingDateTime = {};
     booking.bookingDateTime.startDateTime = faker.helpers.arrayElement([
       '9:30 am',
@@ -140,6 +143,7 @@ exports.seedBookings = async function seedBookings() {
     ]);
     bookings.push(booking);
   }
+  // console.log(bookings[0]);
   await Bookings.insertMany(bookings);
 };
 
