@@ -166,7 +166,7 @@ exports.getSpeakers = async (req, res, next) => {
       .populate('reviews')
       .populate('reviewsQuantity')
       .select(
-        'fullName profilePicture location conditions firstName lastName tagline'
+        'fullName profilePicture location conditions firstName lastName tagline skills'
       )
       .limit(10)
       .skip((page - 1) * 10)
