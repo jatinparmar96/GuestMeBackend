@@ -8,13 +8,7 @@ const speakerRoutes = require('./src/routes/speaker');
 const organizationRoutes = require('./src/routes/organization');
 
 const reviewRoutes = require('./src/routes/review');
-const {
-  seedSpeaker,
-  seedReviews,
-  remove,
-  seedBookings,
-  seedOrganization,
-} = require('./seed/seed');
+const { seedBookings } = require('./seed/seed');
 const bookingRoutes = require('./src/routes/booking');
 
 const app = express();
@@ -23,7 +17,8 @@ app.use(cors());
 const Schema = mongoose.Schema;
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true })); //parse form data
+
+app.use(express.urlencoded({ extended: true, limit: '20mb' })); //parse form data
 // app.use((req, res, next) => {
 //   res.setHeader('Access-Control-Allow-Origin', '*');
 //   res.setHeader(
