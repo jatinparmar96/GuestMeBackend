@@ -16,9 +16,9 @@ const app = express();
 app.use(cors());
 const Schema = mongoose.Schema;
 
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
 
-app.use(express.urlencoded({ extended: true, limit: '20mb' })); //parse form data
+app.use(express.urlencoded({ extended: true, limit: '50mb' })); //parse form data
 // app.use((req, res, next) => {
 //   res.setHeader('Access-Control-Allow-Origin', '*');
 //   res.setHeader(
