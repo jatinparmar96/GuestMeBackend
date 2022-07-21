@@ -8,7 +8,7 @@ const speakerRoutes = require('./src/routes/speaker');
 const organizationRoutes = require('./src/routes/organization');
 
 const reviewRoutes = require('./src/routes/review');
-const { seedBookings } = require('./seed/seed');
+const { seedBookings, seedSpeaker, seedOrganization } = require('./seed/seed');
 const bookingRoutes = require('./src/routes/booking');
 
 const app = express();
@@ -54,6 +54,17 @@ app.get('/seed', async (req, res) => {
   // await seedReviews();
   await seedBookings();
   res.json();
+});
+
+app.get('/seedJson', async (req, res) => {
+  if (req.query.type === 'speaker') {
+    res.json(await seedSpeaker(req.body));
+  }
+  if (req.query.type === 'organization') {
+    res.json(
+      await seedOrganization(Object.keys(req.body).length ? req.body : [])
+    );
+  }
 });
 app.get('/dbtest', async (req, res) => {
   const model = new MyModel({});
