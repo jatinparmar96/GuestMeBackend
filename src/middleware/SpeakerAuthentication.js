@@ -14,7 +14,7 @@ exports.SpeakerAuthMiddleware = (req, res, next) => {
       return next();
     }
   } catch (error) {
-    res.send(403, { error: error.message });
+    return res.send(403, { error: error.message });
   }
-  res.send(500);
+  return res.send(500);
 };
