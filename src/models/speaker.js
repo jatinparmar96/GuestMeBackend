@@ -15,7 +15,7 @@ const speakerSchema = new Schema(
     location: {
       type: String,
     },
-    tagLine: {
+    tagline: {
       type: String,
     },
     profilePicture: {
