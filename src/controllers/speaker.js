@@ -189,7 +189,7 @@ exports.getSpeakers = async (req, res, next) => {
  *! Update Speaker Profile
  * TODO: Add Validation to data
  * @param {*} req
- * @param {*} res
+ * @param {Response} res
  * @param {*} next
  */
 exports.updateProfile = async (req, res, next) => {
@@ -203,7 +203,10 @@ exports.updateProfile = async (req, res, next) => {
 
     // If file already exists, replace data only
     if (user.profilePicture) {
-      fileName = user.profilePicture.split('/').at(-1);
+      const currentFile = user.profilePicture.split('/').at(-1);
+      if (currentFile) {
+        fileName = currentFile;
+      }
     }
     // Remove content Type from base64 string
     let imageData = Buffer.from(
@@ -221,7 +224,12 @@ exports.updateProfile = async (req, res, next) => {
       ACL: 'public-read',
       Body: imageData,
     };
-    const response = await s3.upload(s3Params).promise();
+    try {
+      const response = await s3.upload(s3Params).promise();
+    } catch (e) {
+      console.log(e);
+      return res.status(500).send('Error uploading to AWS');
+    }
     if (response) {
       userData.profilePicture = response.Location;
     }
