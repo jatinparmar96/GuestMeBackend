@@ -11,64 +11,69 @@ exports.remove = async function remove() {
   await Bookings.deleteMany({}).exec();
 };
 
-exports.seedSpeaker = async function seedSpeaker() {
-  const speakers = [];
-  for (let i = 0; i < 20; i++) {
-    const speaker = {};
-    speaker.firstName = faker.name.firstName();
-    speaker.lastName = faker.name.lastName();
-    speaker.location = faker.address.cityName();
-    speaker.skills = faker.helpers.arrayElement([
-      'Art',
-      'Graphic Design',
-      'Music',
-    ]);
-    speaker.videos = faker.helpers.arrayElement([
-      'https://www.youtube.com/watch?v=8hly31xKli0',
-      'https://www.youtube.com/watch?v=fAAZixBzIAI',
-      'https://www.youtube.com/watch?v=xa-4IAR_9Yw',
-    ]);
-    speaker.certifications = faker.helpers.arrayElement([
-      'Diploma in Electronics',
-      'Diploma in Computer Science',
-      'Diploma in Mechatronics',
-    ]);
-    speaker.profilePicture = `https://picsum.photos/seed/${i + 1}/400/400/`;
-    speaker.about = faker.lorem.sentence();
-    speaker.availability = [
-      faker.date.soon(1),
-      faker.date.soon(3),
-      faker.date.soon(7),
-      faker.date.soon(9),
-      faker.date.soon(11),
-    ];
-    speaker.conditions = {};
-    speaker.conditions.isInPerson = faker.helpers.arrayElement([true, false]);
-    speaker.conditions.isOnline = faker.helpers.arrayElement([true, false]);
-    speaker.conditions.price = faker.datatype.number({ min: 10, max: 200 });
-    speaker.conditions.areas = faker.helpers.arrayElement([
-      'Law',
-      'Finance',
-      'Science',
-      'Arts',
-    ]);
-    speaker.conditions.language = faker.helpers.arrayElement([
-      'English',
-      'French',
-      'Hindi',
-      'Spanish',
-    ]);
-    const email = faker.internet.email().toLowerCase();
-    speaker.credentials = {};
-    speaker.credentials.email = email;
-    speaker.credentials.password = await generateHash('topsecret');
-    speaker.contact = {};
+exports.seedSpeaker = async function seedSpeaker(body = []) {
+  const speakers = body;
 
-    speaker.contact.phone = faker.phone.number();
-    speaker.contact.email = email;
-    speakers.push(speaker);
+  if (!body.length) {
+    for (let i = 0; i < 1; i++) {
+      const speaker = {};
+      speaker.firstName = faker.name.firstName();
+      speaker.lastName = faker.name.lastName();
+      speaker.location = faker.address.cityName();
+      speaker.skills = faker.helpers.arrayElement([
+        'Art',
+        'Graphic Design',
+        'Music',
+      ]);
+      speaker.videos = faker.helpers.arrayElement([
+        'https://www.youtube.com/watch?v=8hly31xKli0',
+        'https://www.youtube.com/watch?v=fAAZixBzIAI',
+        'https://www.youtube.com/watch?v=xa-4IAR_9Yw',
+      ]);
+      speaker.certifications = faker.helpers.arrayElement([
+        'Diploma in Electronics',
+        'Diploma in Computer Science',
+        'Diploma in Mechatronics',
+      ]);
+      speaker.profilePicture = `https://picsum.photos/seed/${i + 1}/400/400/`;
+      speaker.about = faker.lorem.sentence();
+      speaker.availability = [
+        faker.date.soon(1),
+        faker.date.soon(3),
+        faker.date.soon(7),
+        faker.date.soon(9),
+        faker.date.soon(11),
+      ];
+      speaker.conditions = {};
+      speaker.conditions.isInPerson = faker.helpers.arrayElement([true, false]);
+      speaker.conditions.isOnline = faker.helpers.arrayElement([true, false]);
+      speaker.conditions.price = faker.datatype.number({ min: 10, max: 200 });
+      speaker.conditions.areas = faker.helpers.arrayElement([
+        'Law',
+        'Finance',
+        'Science',
+        'Arts',
+      ]);
+      speaker.conditions.language = faker.helpers.arrayElement([
+        'English',
+        'French',
+        'Hindi',
+        'Spanish',
+      ]);
+      const email = faker.internet.email().toLowerCase();
+      speaker.credentials = {};
+      speaker.credentials.email = email;
+      speaker.credentials.password = await generateHash('topsecret');
+      speaker.contact = {};
+
+      speaker.contact.phone = faker.phone.number();
+      speaker.contact.email = email;
+      speakers.push(speaker);
+    }
   }
+
   await Speaker.collection.insertMany(speakers);
+  return speakers;
 };
 
 exports.seedReviews = async function seedReviews() {
@@ -147,26 +152,30 @@ exports.seedBookings = async function seedBookings() {
   await Bookings.insertMany(bookings);
 };
 
-exports.seedOrganization = async function seedOrganization() {
-  const organizations = [];
-  for (let i = 0; i < 10; i++) {
-    const organization = {};
-    organization.organizationName = faker.company.companyName();
-    organization.about = faker.lorem.sentence();
-    organization.profilePicture = `https://picsum.photos/seed/${
-      i + 1
-    }/400/400/`;
-    organization.address = faker.address.streetAddress();
-    organization.postalCode = faker.address.zipCode();
-    organization.phone = faker.phone.number();
-    organization.contact = {};
-    const email = faker.internet.email().toLowerCase();
-    organization.contact.email = email;
-    organization.contact.phone = faker.phone.number();
-    organization.credentials = {};
-    organization.credentials.email = email;
-    organization.credentials.password = await generateHash('topsecret');
-    organizations.push(organization);
+exports.seedOrganization = async function seedOrganization(body = []) {
+  const organizations = body;
+  if (!body.length) {
+    for (let i = 0; i < 20; i++) {
+      const organization = {};
+      organization.organizationName = faker.company.companyName();
+      organization.about = faker.lorem.sentence();
+      organization.profilePicture = `https://picsum.photos/seed/${
+        i + 1
+      }/400/400/`;
+      organization.address = faker.address.streetAddress();
+      organization.postalCode = faker.address.zipCode();
+      organization.phone = faker.phone.number();
+      organization.contact = {};
+      const email = faker.internet.email().toLowerCase();
+      organization.contact.email = email;
+      organization.contact.phone = faker.phone.number();
+      organization.credentials = {};
+      organization.credentials.email = email;
+      organization.credentials.password = await generateHash('topsecret');
+      organizations.push(organization);
+    }
   }
+
   await Organization.collection.insertMany(organizations);
+  return organizations;
 };
