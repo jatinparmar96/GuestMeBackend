@@ -226,12 +226,12 @@ exports.updateProfile = async (req, res, next) => {
     };
     try {
       const response = await s3.upload(s3Params).promise();
+      if (response) {
+        userData.profilePicture = response.Location;
+      }
     } catch (e) {
       console.log(e);
       return res.status(500).send('Error uploading to AWS');
-    }
-    if (response) {
-      userData.profilePicture = response.Location;
     }
   }
 
