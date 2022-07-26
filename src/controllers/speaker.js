@@ -56,7 +56,7 @@ exports.register = async (req, res, next) => {
       { expiresIn: '30 days' }
     );
     res.status(200).send({
-      speaker,
+      user: speaker,
       token,
     });
   } catch (error) {
@@ -234,7 +234,6 @@ exports.updateProfile = async (req, res, next) => {
   Object.keys(userData).forEach((key) => {
     user[key] = userData[key];
   });
-  console.log(user);
 
   await user.save();
   res.json(user);
