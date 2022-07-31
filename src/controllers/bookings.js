@@ -47,9 +47,29 @@ const setBookingStatus = (req, res) => {
     .catch((error) => res.status(500).send(error));
 };
 
+const getBookingsByMonth = async (req, res) => {
+  // This should only fetch accepted Bookings but for demo this is fine.
+  let bookings = await Booking.find().lean();
+
+  const newBookings = bookings.reduce((acc, booking) => {
+    const month = new Date(booking.bookingDateTime.date).getMonth();
+    if (acc[month]) {
+      acc[month] += 1;
+    } else {
+      acc[month] = 1;
+    }
+    return acc;
+  }, {});
+  let bookingsByMonth = [];
+  for (let i = 0; i < 12; i++) {
+    bookingsByMonth[i] = newBookings[i] || 0;
+  }
+  return res.json(bookingsByMonth);
+};
 module.exports = {
   getBookings,
   postBooking,
   getBookingsBySpeakerId,
   setBookingStatus,
+  getBookingsByMonth,
 };
