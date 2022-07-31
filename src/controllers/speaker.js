@@ -10,6 +10,7 @@ const {
   availabilitySchema,
 } = require('../middleware/validation_speakerSchema');
 const { s3, s3Bucket } = require('../utils/aws-service');
+const Booking = require('../models/bookings');
 
 /**
  *! Register Speaker
@@ -285,9 +286,20 @@ exports.getMaxPrice = async (req, res, next) => {
  *  */
 exports.getSpeakerBookings = async (req, res) => {
   try {
-    const { bookings } = await Speaker.findOne({ _id: req.params.id })
-      .populate('bookings')
-      .select('bookings');
+    const bookings = await Booking.find({
+      'speaker.id': req.params.id,
+    })
+      .populate({
+        path: 'speaker.id',
+        justOne: true,
+        select: 'contact firstName lastName',
+      })
+      .populate({
+        path: 'organization.id',
+        justOne: true,
+        select: 'contact organizationName',
+      });
+
     const sortedBookings = bookings.reduce((acc, booking) => {
       if (acc[booking.status]) {
         acc[booking.status].push(booking);
